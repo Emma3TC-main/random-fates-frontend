@@ -1,15 +1,14 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
-import Projects from "./pages/Projects";
 import About from "./pages/About";
 import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard";
+import Games from "./pages/Games";
 import Contact from "./pages/Contact";
 
 function App() {
   return (
-    <div >
+    <div>
       <Navbar />
 
       <Routes>
@@ -17,7 +16,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/projects" element={<Projects />} />
+        <Route path="/games" element={<Games />} />
       </Routes>
     </div>
   );
