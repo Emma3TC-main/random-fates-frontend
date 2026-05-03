@@ -1,32 +1,61 @@
+# Nombre del workflow (aparece en la pestaña Actions de GitHub)
 name: Frontend CI
 
+# Define cuándo se ejecuta este pipeline
 on:
+  # Se ejecuta al hacer push a estas ramas
   push:
     branches: [main, develop]
+
+  # Se ejecuta en cualquier Pull Request
   pull_request:
 
+# Define los trabajos (jobs) que se ejecutarán
 jobs:
   build:
+    # Máquina virtual donde se ejecuta el job (Linux)
     runs-on: ubuntu-latest
 
-    steps:
-      # 1. Clona el repo
-      - uses: actions/checkout@v4
+    # Variables de entorno globales para el job
+    env:
+      CI: true  # Hace que herramientas como Jest corran en modo CI (sin modo interactivo)
 
-      # 2. Instala Node
-      - uses: actions/setup-node@v4
+    steps:
+      # 🔹 1. Clona el repositorio en el runner
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 🔹 2. Instala Node.js y activa caché de dependencias
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: 'npm'  # Cachea node_modules para acelerar builds futuros
 
-      # 3. Instala dependencias
-      - run: npm install
+      # 🔹 3. Instala dependencias de forma limpia
+      - name: Install dependencies
+        run: npm ci
+        # npm ci es más rápido y seguro que npm install en CI
+        # porque usa package-lock.json exactamente
 
-      # 4. Lint (calidad de código)
-      - run: npm run lint
+      # 🔹 4. Ejecuta el linter (calidad de código)
+      - name: Run ESLint
+        run: npm run lint
 
-      # 5. Tests (modo CI)
-      - run: npm test -- --watchAll=false
+      # 🔹 5. Ejecuta tests en modo CI
+      - name: Run tests
+        run: npm test -- --watchAll=false
+        # --watchAll=false evita que Jest se quede esperando cambios
 
-      # 6. Build (verifica que compile)
-      - run: npm run build
+      # 🔹 6. Construye la app (verifica que compile correctamente)
+      - name: Build project
+        run: npm run build
+
+      # 🔹 7. (Opcional) Guardar artefacto del build
+      - name: Upload build artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: build
+        # Esto permite descargar el build desde GitHub Actions
