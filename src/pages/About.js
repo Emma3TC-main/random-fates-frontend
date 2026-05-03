@@ -1,7 +1,7 @@
 function About() {
   return (
     <div>
-      <h1>Sobre nosotros</h1>
+      <h1>Sobre nosotros (RandomFates)</h1>
     </div>
   );
 }
