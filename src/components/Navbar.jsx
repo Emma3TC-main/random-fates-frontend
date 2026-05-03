@@ -11,7 +11,7 @@ function Navbar() {
     }`;
 
   return (
-    <nav className="sticky text-white top-0 z-50 border-b border-[#42DEE1]/30 bg-[#3FC5F0]/90 backdrop-blur">
+    <nav role="navigation" className="sticky text-white top-0 z-50 border-b border-[#42DEE1]/30 bg-[#3FC5F0]/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
 
         <Link to="/" className="flex items-center gap-3" >

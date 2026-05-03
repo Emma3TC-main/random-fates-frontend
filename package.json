@@ -9,7 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-router-dom": "^7.14.1",
+    "react-router-dom": "^6.30.3",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -17,6 +17,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "lint": "eslint src/**/*.{js,jsx}",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.5.0",
+    "eslint": "^8.57.1",
     "postcss": "^8.5.10",
     "tailwindcss": "^3.4.19"
   }

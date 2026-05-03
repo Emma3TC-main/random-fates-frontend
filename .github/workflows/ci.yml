@@ -10,11 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Clona el repo
       - uses: actions/checkout@v4
 
+      # 2. Instala Node
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
+      # 3. Instala dependencias
       - run: npm install
+
+      # 4. Lint (calidad de código)
+      - run: npm run lint
+
+      # 5. Tests (modo CI)
+      - run: npm test -- --watchAll=false
+
+      # 6. Build (verifica que compile)
       - run: npm run build
