@@ -34,9 +34,9 @@ jobs:
 
       # 🔹 3. Instala dependencias de forma limpia
       - name: Install dependencies
-        run: npm ci
+        run: npm install 
         # npm ci es más rápido y seguro que npm install en CI
-        # porque usa package-lock.json exactamente
+        # porque usa package-lock.json exactamente (pero depende por ahora se usará para probar el flujo de pruebas)
 
       # 🔹 4. Ejecuta el linter (calidad de código)
       - name: Run ESLint
