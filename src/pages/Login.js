@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShieldCheck, Clock3, FileSpreadsheet, Sparkles } from "lucide-react";
+import { loginUser } from "../services/authService";
 
 function Login() {
   const [usuario, setUsuario] = useState("");
@@ -8,12 +9,14 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const handeLogin = () => {
-    if (usuario === "user" && password === "123456") {
-      alert("Login correcto");
+  const handleLogin = () => {
+    const user = loginUser(usuario, password);
+
+    if (user) {
+      alert(`Bienvenido, ${user.nombre}`);
       navigate("/dashboard");
     } else {
-      alert("Verificar credenciales");
+      alert("Usuario o contraseña incorrectos");
     }
   };
 
@@ -162,13 +165,23 @@ function Login() {
                 </button>
               </div>
 
-              {/* Botón */}
+              {/* Botón Login */}
               <button
-                onClick={handeLogin}
+                onClick={handleLogin}
                 className="w-full py-3 rounded-2xl bg-[#071426] hover:bg-[#0d1f38] text-white font-semibold transition-all duration-300 shadow-lg shadow-cyan-500/10"
               >
                 Ingresar
               </button>
+
+              <div className="text-center text-sm text-slate-500 pt-4">
+                ¿No tienes cuenta?{" "}
+                <button
+                  onClick={() => navigate("/register")}
+                  className="text-cyan-600 hover:text-cyan-500 font-semibold"
+                >
+                  Crear cuenta
+                </button>
+              </div>
             </div>
           </div>
         </div>

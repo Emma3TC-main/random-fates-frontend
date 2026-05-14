@@ -1,8 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/Logo.png";
+import { getAuthUser, logoutUser } from "../services/authService";
 
 function Navbar() {
   const location = useLocation();
+
+  // obtener usuario autenticado
+  const user = getAuthUser();
 
   const linkClass = (path) =>
     `relative rounded-2xl px-4 py-2.5 text-sm font-medium transition-all duration-300 ${
@@ -27,10 +31,8 @@ function Navbar() {
         {/* LOGO */}
         <Link to="/" className="group flex items-center gap-4 transition-all">
           <div className="relative">
-            {/* Glow */}
             <div className="absolute inset-0 rounded-full bg-[#EEF5B2]/30 blur-xl transition duration-300 group-hover:bg-[#EEF5B2]/40" />
 
-            {/* Logo Container */}
             <div className="relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-xl backdrop-blur">
               <img
                 src={logo}
@@ -45,7 +47,9 @@ function Navbar() {
               RandomFates
             </h1>
 
-            <p className="text-xs text-white/80">Sorteos digitales modernos</p>
+            <p className="text-xs text-white/80">
+              Sorteos digitales modernos
+            </p>
           </div>
         </Link>
 
@@ -78,16 +82,39 @@ function Navbar() {
 
         {/* ACTIONS */}
         <div className="flex items-center gap-3">
-          <Link
-            to="/login"
-            className="rounded-2xl border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white shadow-md backdrop-blur transition hover:bg-white/20"
-          >
-            Login
-          </Link>
+          {user ? (
+            <>
+              <span className="hidden md:block text-white font-medium">
+                Hola, {user.nombre}
+              </span>
 
-          <button className="hidden rounded-2xl bg-[#EEF5B2] px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-xl transition hover:scale-[1.02] hover:brightness-95 md:block">
-            Empezar
-          </button>
+              <button
+                onClick={() => {
+                  logoutUser();
+                  window.location.href = "/login";
+                }}
+                className="rounded-2xl border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white shadow-md backdrop-blur transition hover:bg-white/20"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="rounded-2xl border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-white shadow-md backdrop-blur transition hover:bg-white/20"
+              >
+                Login
+              </Link>
+
+              <Link
+                to="/register"
+                className="hidden rounded-2xl bg-[#EEF5B2] px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-xl transition hover:scale-[1.02] hover:brightness-95 md:block"
+              >
+                Registrarse
+              </Link>
+            </>
+          )}
         </div>
       </nav>
     </header>

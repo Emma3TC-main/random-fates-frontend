@@ -59,9 +59,7 @@ function Dashboard() {
 
           <h2 className="mt-3 text-4xl font-bold text-gray-900">5</h2>
 
-          <p className="mt-4 text-sm text-gray-500">
-            Listos para ejecutar
-          </p>
+          <p className="mt-4 text-sm text-gray-500">Listos para ejecutar</p>
         </div>
 
         {/* Card 3 */}
@@ -83,9 +81,7 @@ function Dashboard() {
             ÚLTIMA EJECUCIÓN
           </p>
 
-          <h2 className="mt-3 text-2xl font-bold text-gray-900">
-            Hoy · 14:22
-          </h2>
+          <h2 className="mt-3 text-2xl font-bold text-gray-900">Hoy · 14:22</h2>
 
           <div className="mt-4 flex flex-wrap gap-2">
             <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
@@ -115,20 +111,11 @@ function Dashboard() {
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-              <QuickButton
-                icon={<Trophy size={20} />}
-                title="Crear Sorteo"
-              />
+              <QuickButton icon={<Trophy size={20} />} title="Crear Sorteo" />
 
-              <QuickButton
-                icon={<Ticket size={20} />}
-                title="Ir a Sorteos"
-              />
+              <QuickButton icon={<Ticket size={20} />} title="Ir a Sorteos" />
 
-              <QuickButton
-                icon={<Gamepad2 size={20} />}
-                title="Ver Juegos"
-              />
+              <QuickButton icon={<Gamepad2 size={20} />} title="Ver Juegos" />
 
               <QuickButton
                 icon={<FileSpreadsheet size={20} />}
@@ -140,10 +127,7 @@ function Dashboard() {
                 title="Verificar Hash"
               />
 
-              <QuickButton
-                icon={<LifeBuoy size={20} />}
-                title="Soporte"
-              />
+              <QuickButton icon={<LifeBuoy size={20} />} title="Soporte" />
             </div>
           </div>
         </div>
@@ -227,9 +211,7 @@ function Dashboard() {
 function QuickButton({ icon, title }) {
   return (
     <button className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-4 text-left transition hover:border-cyan-300 hover:bg-cyan-50">
-      <div className="rounded-xl bg-gray-100 p-3 text-gray-700">
-        {icon}
-      </div>
+      <div className="rounded-xl bg-gray-100 p-3 text-gray-700">{icon}</div>
 
       <span className="font-medium text-gray-800">{title}</span>
     </button>

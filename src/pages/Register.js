@@ -10,6 +10,7 @@ import {
   LockKeyhole,
   User,
 } from "lucide-react";
+import { registerUser } from "../services/authService";
 
 function Register() {
   const navigate = useNavigate();
@@ -43,6 +44,13 @@ function Register() {
 
     if (form.password !== form.confirmPassword) {
       alert("Las contraseñas no coinciden");
+      return;
+    }
+
+    const response = registerUser(form);
+
+    if (!response.success) {
+      alert(response.message);
       return;
     }
 
