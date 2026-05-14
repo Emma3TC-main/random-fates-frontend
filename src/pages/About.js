@@ -1,53 +1,40 @@
+import { useEffect, useState } from "react";
+
+import FeatureItem from "../components/about/FeatureItem";
+import JourneyStep from "../components/about/JourneyStep";
+import TechCard from "../components/about/TechCard";
+import ValueCard from "../components/about/ValueCard";
+
 function About() {
-  const values = [
-    {
-      title: "Transparencia",
-      description:
-        "Creamos sorteos claros y verificables para generar confianza en cada resultado.",
-    },
-    {
-      title: "Accesibilidad",
-      description:
-        "Buscamos que cualquier persona pueda crear dinámicas profesionales sin herramientas complejas.",
-    },
-    {
-      title: "Experiencia visual",
-      description:
-        "Diseñamos interfaces modernas y dinámicas para hacer los sorteos más atractivos.",
-    },
-    {
-      title: "Escalabilidad",
-      description:
-        "La plataforma está preparada para crecer junto a comunidades, marcas y eventos digitales.",
-    },
-  ];
+  const [aboutData, setAboutData] = useState(null);
 
-  const technologies = [
-    "React + Vite",
-    "TailwindCSS",
-    "Node.js",
-    "Socket.io",
-    "PostgreSQL",
-    "Prisma ORM",
-  ];
+  const [loading, setLoading] = useState(true);
 
-  const journey = [
-    {
-      step: "1",
-      title: "Detectamos un problema",
-      desc: "Muchos sorteos digitales todavía dependen de procesos manuales y poco transparentes.",
-    },
-    {
-      step: "2",
-      title: "Diseñamos una solución",
-      desc: "Creamos una plataforma enfocada en automatización, claridad y experiencia moderna.",
-    },
-    {
-      step: "3",
-      title: "Construimos RandomFates",
-      desc: "Un sistema pensado para simplificar dinámicas promocionales y mejorar el engagement.",
-    },
-  ];
+  useEffect(() => {
+    const fetchAboutData = async () => {
+      try {
+        const response = await fetch("/about.json");
+
+        const data = await response.json();
+
+        setAboutData(data);
+      } catch (error) {
+        console.log("Error cargando datos:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAboutData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
+        <p className="text-slate-500 text-lg">Cargando información...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] px-6 py-8 md:px-10">
@@ -85,7 +72,7 @@ function About() {
 
       {/* ABOUT + PURPOSE */}
       <div className="mt-12 grid gap-6 lg:grid-cols-2">
-        {/* LEFT */}
+        {/* MISSION */}
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
           <div className="mb-4 inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
             NUESTRA MISIÓN
@@ -98,32 +85,17 @@ function About() {
           <p className="mt-5 leading-relaxed text-slate-600">
             Creemos que realizar un sorteo profesional no debería requerir
             procesos manuales, herramientas complicadas o conocimientos técnicos
-            avanzados. Por eso desarrollamos una plataforma intuitiva,
-            automatizada y enfocada en la experiencia del usuario.
+            avanzados.
           </p>
 
           <div className="mt-8 space-y-4">
-            {[
-              "Interfaz moderna y fácil de usar",
-              "Resultados transparentes",
-              "Automatización de participantes",
-              "Experiencias interactivas",
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-3 rounded-2xl bg-slate-50 p-4"
-              >
-                <div className="h-3 w-3 rounded-full bg-[#40CFFF]" />
-
-                <span className="text-sm font-medium text-slate-700">
-                  {item}
-                </span>
-              </div>
+            {aboutData?.missionFeatures.map((item) => (
+              <FeatureItem key={item.id} item={item} />
             ))}
           </div>
         </div>
 
-        {/* RIGHT */}
+        {/* VISION */}
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
           <div className="mb-4 inline-flex rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
             NUESTRA VISIÓN
@@ -135,23 +107,16 @@ function About() {
 
           <p className="mt-5 leading-relaxed text-slate-600">
             Buscamos convertir los sorteos en experiencias dinámicas, confiables
-            y visualmente memorables. RandomFates combina tecnología y
-            gamificación para aumentar la interacción entre marcas, comunidades
-            y audiencias digitales.
+            y visualmente memorables.
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            {[
-              "Gamificación moderna",
-              "Experiencia en tiempo real",
-              "Mayor engagement",
-              "Escalable y adaptable",
-            ].map((item, index) => (
+            {aboutData?.visionFeatures.map((item) => (
               <div
-                key={index}
+                key={item.id}
                 className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium text-slate-700"
               >
-                {item}
+                {item.text}
               </div>
             ))}
           </div>
@@ -172,30 +137,15 @@ function About() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-          {values.map((value, index) => (
-            <div
-              key={index}
-              className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
-            >
-              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-100">
-                <div className="h-6 w-6 rounded-full bg-[#40CFFF]" />
-              </div>
-
-              <h3 className="text-xl font-bold text-slate-900">
-                {value.title}
-              </h3>
-
-              <p className="mt-3 text-sm leading-relaxed text-slate-500">
-                {value.description}
-              </p>
-            </div>
+          {aboutData?.values.map((value) => (
+            <ValueCard key={value.id} value={value} />
           ))}
         </div>
       </div>
 
       {/* STORY + TECH */}
       <div className="mt-12 grid gap-6 lg:grid-cols-2">
-        {/* LEFT */}
+        {/* STORY */}
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
           <h2 className="text-3xl font-bold text-slate-900">
             Cómo comenzó RandomFates
@@ -203,28 +153,17 @@ function About() {
 
           <p className="mt-4 leading-relaxed text-slate-600">
             El proyecto surge a partir de la necesidad de contar con una
-            herramienta más profesional, moderna y transparente para dinámicas
-            digitales y promociones online.
+            herramienta más profesional y transparente.
           </p>
 
           <div className="mt-8 space-y-6">
-            {journey.map((item, index) => (
-              <div key={index} className="flex gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#40CFFF] font-bold text-slate-900">
-                  {item.step}
-                </div>
-
-                <div>
-                  <h4 className="font-semibold text-slate-900">{item.title}</h4>
-
-                  <p className="mt-1 text-sm text-slate-500">{item.desc}</p>
-                </div>
-              </div>
+            {aboutData?.journey.map((item) => (
+              <JourneyStep key={item.id} item={item} />
             ))}
           </div>
         </div>
 
-        {/* RIGHT */}
+        {/* TECH */}
         <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
           <h2 className="text-3xl font-bold text-slate-900">
             Tecnología detrás del sistema
@@ -232,21 +171,12 @@ function About() {
 
           <p className="mt-4 leading-relaxed text-slate-600">
             Utilizamos herramientas modernas para construir una plataforma
-            rápida, escalable y preparada para experiencias en tiempo real.
+            rápida y escalable.
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            {technologies.map((tech, index) => (
-              <div
-                key={index}
-                className="rounded-2xl border border-slate-200 bg-slate-50 p-5"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="h-3 w-3 rounded-full bg-[#40CFFF]" />
-
-                  <span className="font-semibold text-slate-800">{tech}</span>
-                </div>
-              </div>
+            {aboutData?.technologies.map((tech) => (
+              <TechCard key={tech.id} tech={tech} />
             ))}
           </div>
 
@@ -256,8 +186,7 @@ function About() {
             </h4>
 
             <p className="mt-2 text-sm leading-relaxed text-slate-500">
-              RandomFates utiliza una arquitectura desacoplada frontend/backend,
-              optimizada para escalabilidad, mantenimiento y futuras mejoras.
+              RandomFates utiliza una arquitectura desacoplada frontend/backend.
             </p>
           </div>
         </div>
@@ -273,8 +202,7 @@ function About() {
 
             <p className="mt-3 text-slate-300">
               En RandomFates trabajamos para ofrecer herramientas modernas,
-              accesibles y transparentes que ayuden a conectar mejor con las
-              audiencias digitales.
+              accesibles y transparentes.
             </p>
           </div>
 
