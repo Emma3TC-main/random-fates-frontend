@@ -10,6 +10,9 @@ import Contact from "../pages/Contact";
 import Raffles from "../pages/Raffle";
 import Games from "../pages/Games";
 import Footer from "../components/Footer";
+import RouletteGame from "../pages/RouletteGame";
+import RandomSelectionGame from "../pages/RandomSelectionGame";
+import SlotsGame from "../pages/SlotsGame";
 
 function AppRouter() {
   return (
@@ -50,6 +53,33 @@ function AppRouter() {
           element={
             <ProtectedRoute>
               <Games />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/games/roulette"
+          element={
+            <ProtectedRoute>
+              <RouletteGame />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/games/random-selection"
+          element={
+            <ProtectedRoute>
+              <RandomSelectionGame />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/games/slots"
+          element={
+            <ProtectedRoute>
+              <SlotsGame />
             </ProtectedRoute>
           }
         />

@@ -1,7 +1,10 @@
+import { Link } from "react-router-dom";
+
 function Games() {
   const games = [
     {
       title: "Ruleta",
+      slug: "roulette",
       description:
         "Ideal para transmisiones en vivo y sorteos visuales interactivos.",
       badge: "POPULAR",
@@ -11,6 +14,7 @@ function Games() {
     },
     {
       title: "Selección Aleatoria",
+      slug: "random-selection",
       description:
         "Perfecto para sorteos rápidos y selección masiva de participantes.",
       badge: "RÁPIDO",
@@ -20,12 +24,13 @@ function Games() {
     },
     {
       title: "Slots",
+      slug: "slots",
       description:
         "Próximamente disponible para dinámicas gamificadas y premios.",
       badge: "PRÓXIMAMENTE",
       badgeColor: "bg-purple-100 text-purple-700",
       tags: ["Gaming", "Animado", "Nuevo"],
-      available: false,
+      available: true,
     },
   ];
 
@@ -111,9 +116,12 @@ function Games() {
               <div className="mt-6 flex gap-3">
                 {game.available ? (
                   <>
-                    <button className="flex-1 rounded-2xl bg-[#40CFFF] px-4 py-3 text-sm font-semibold text-slate-900 transition hover:brightness-95">
+                    <Link
+                      to={`/games/${game.slug}`}
+                      className="flex-1 rounded-2xl bg-[#40CFFF] px-4 py-3 text-center text-sm font-semibold text-slate-900 transition hover:brightness-95"
+                    >
                       Usar este juego
-                    </button>
+                    </Link>
 
                     <button className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
                       Vista previa

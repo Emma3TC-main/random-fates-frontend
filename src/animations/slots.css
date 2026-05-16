@@ -1,0 +1,17 @@
+@keyframes slotGlow {
+  0% {
+    box-shadow: 0 0 0px rgba(255, 215, 0, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 35px rgba(255, 215, 0, 0.9);
+  }
+
+  100% {
+    box-shadow: 0 0 0px rgba(255, 215, 0, 0.3);
+  }
+}
+
+.slot-glow {
+  animation: slotGlow 1.5s infinite;
+}
