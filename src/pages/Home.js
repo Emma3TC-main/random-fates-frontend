@@ -25,6 +25,14 @@ function Home() {
     }
   };
 
+  const handleTryGames = () => {
+    if (authUser) {
+      navigate("/games");
+    } else {
+      navigate("/register");
+    }
+  };
+
   useEffect(() => {
     apiFetch("/api/test")
       .then((data) => {
@@ -73,7 +81,10 @@ function Home() {
                 Empezar ahora
               </button>
 
-              <button className="rounded-2xl border border-border bg-card px-7 py-4 font-semibold transition hover:bg-muted">
+              <button
+                onClick={handleTryGames}
+                className="rounded-2xl border border-border bg-card px-7 py-4 font-semibold transition hover:bg-muted"
+              >
                 Ver juegos →
               </button>
             </div>
