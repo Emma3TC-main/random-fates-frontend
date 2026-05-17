@@ -68,8 +68,10 @@ function RouletteWheel({
               <div
                 key={participant.id}
                 className="absolute left-1/2 top-1/2"
+                // Str: actulizado para corregir la posición del texto y asegurar que se detenga exactamente en el segmento del ganador, sin importar la rotación actual.
                 style={{
                   transform: `
+                    translate(-50%, -50%)
                     rotate(${angle}deg)
                     translateY(-165px)
                     rotate(-${angle}deg)

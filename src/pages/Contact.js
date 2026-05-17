@@ -6,6 +6,7 @@ import {
   Sparkles,
   Send,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import useStartNow from "../hooks/useStartNow";
 
@@ -308,7 +309,10 @@ function Contact() {
 
             <div className="flex flex-wrap gap-4">
               <button className="rounded-2xl border border-slate-600 bg-transparent px-6 py-3 font-medium text-white transition hover:bg-white/5">
-                Conocer plataforma
+              <Link to="/about">
+              Conocer plataforma
+              </Link>
+
               </button>
 
               <button
