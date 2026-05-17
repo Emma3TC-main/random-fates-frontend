@@ -7,7 +7,12 @@ import {
   Send,
 } from "lucide-react";
 
+import useStartNow from "../hooks/useStartNow";
+
 function Contact() {
+
+  const {handleStartNow} = useStartNow();
+
   const contactCards = [
     {
       icon: <Mail className="h-6 w-6" />,
@@ -306,7 +311,9 @@ function Contact() {
                 Conocer plataforma
               </button>
 
-              <button className="rounded-2xl bg-[#40CFFF] px-6 py-3 font-semibold text-slate-900 transition hover:brightness-95">
+              <button
+              onClick={handleStartNow}
+              className="rounded-2xl bg-[#40CFFF] px-6 py-3 font-semibold text-slate-900 transition hover:brightness-95">
                 Empezar ahora
               </button>
             </div>

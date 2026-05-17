@@ -1,37 +1,11 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Check, Users, Shield, TrendingUp, Sparkles } from "lucide-react";
 
 import { apiFetch } from "../api/client";
-import { getAuthUser } from "../services/authService";
+import useStartNow from "../hooks/useStartNow";
 
 function Home() {
-  const navigate = useNavigate();
-  const authUser = getAuthUser();
-
-  const handleStartNow = () => {
-    if (authUser) {
-      navigate("/dashboard");
-    } else {
-      navigate("/register");
-    }
-  };
-
-  const handleCreateAccount = () => {
-    if (authUser) {
-      alert("Ya hay una sesión iniciada");
-    } else {
-      navigate("/register");
-    }
-  };
-
-  const handleTryGames = () => {
-    if (authUser) {
-      navigate("/games");
-    } else {
-      navigate("/register");
-    }
-  };
+  const { handleStartNow, handleCreateAccount, handleTryGames } = useStartNow();
 
   useEffect(() => {
     apiFetch("/api/test")
