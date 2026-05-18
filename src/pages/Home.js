@@ -2,8 +2,11 @@ import { useEffect } from "react";
 import { Check, Users, Shield, TrendingUp, Sparkles } from "lucide-react";
 
 import { apiFetch } from "../api/client";
+import useStartNow from "../hooks/useStartNow";
 
 function Home() {
+  const { handleStartNow, handleCreateAccount, handleTryGames } = useStartNow();
+
   useEffect(() => {
     apiFetch("/api/test")
       .then((data) => {
@@ -45,11 +48,17 @@ function Home() {
             </p>
 
             <div className="mb-10 flex flex-wrap gap-4">
-              <button className="rounded-2xl bg-cyan-400 px-7 py-4 font-semibold text-white shadow-xl shadow-cyan-400/30 transition hover:-translate-y-1 hover:bg-cyan-500">
+              <button
+                onClick={handleStartNow}
+                className="rounded-2xl bg-cyan-400 px-7 py-4 font-semibold text-white shadow-xl shadow-cyan-400/30 transition hover:-translate-y-1 hover:bg-cyan-500"
+              >
                 Empezar ahora
               </button>
 
-              <button className="rounded-2xl border border-border bg-card px-7 py-4 font-semibold transition hover:bg-muted">
+              <button
+                onClick={handleTryGames}
+                className="rounded-2xl border border-border bg-card px-7 py-4 font-semibold transition hover:bg-muted"
+              >
                 Ver juegos →
               </button>
             </div>
@@ -217,9 +226,12 @@ function Home() {
               Empieza gratis y crea una experiencia moderna para tu audiencia.
             </p>
 
-            <button className="rounded-2xl bg-cyan-400 px-8 py-4 text-lg font-semibold text-white shadow-xl shadow-cyan-400/30 transition hover:scale-[1.03] hover:bg-cyan-500">
-              Crear cuenta
-            </button>
+            <button
+                onClick={handleCreateAccount}
+                className="rounded-2xl bg-cyan-400 px-8 py-4 text-lg font-semibold text-white shadow-xl shadow-cyan-400/30 transition hover:scale-[1.03] hover:bg-cyan-500"
+              >
+                Crear cuenta
+              </button>
           </div>
         </div>
       </section>

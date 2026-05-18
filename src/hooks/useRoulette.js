@@ -32,8 +32,12 @@ export default function useRoulette(participants) {
 
     const extraSpins = 360 * 6;
 
+    // Calcula la rotación total necesaria para que la ruleta se detenga en el ganador, asegurando que gire al menos 6 veces para un efecto visual agradable.
+    // La corrección se asegura de que la ruleta se detenga exactamente en el segmento del ganador, sin importar la rotación actual.
     setRotation((prevRotation) => {
-      return prevRotation + extraSpins + (360 - targetAngle);
+      const currentRotation = ((prevRotation % 360) + 360) % 360;
+      const correction = (360 - ((currentRotation + targetAngle) % 360)) % 360;
+      return prevRotation + extraSpins + correction;
     });
 
     setTimeout(() => {

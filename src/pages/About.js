@@ -4,10 +4,13 @@ import FeatureItem from "../components/about/FeatureItem";
 import JourneyStep from "../components/about/JourneyStep";
 import TechCard from "../components/about/TechCard";
 import ValueCard from "../components/about/ValueCard";
+import useStartNow from "../hooks/useStartNow";
 
 function About() {
-  const [aboutData, setAboutData] = useState(null);
+  const {handleStartNow} = useStartNow();
 
+  const [aboutData, setAboutData] = useState(null);
+ 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -59,7 +62,9 @@ function About() {
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <button className="rounded-2xl bg-[#40CFFF] px-6 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:brightness-95">
+            <button 
+            onClick={handleStartNow}
+            className="rounded-2xl bg-[#40CFFF] px-6 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:brightness-95">
               Explorar plataforma
             </button>
 
@@ -211,7 +216,9 @@ function About() {
               Saber más
             </button>
 
-            <button className="rounded-2xl bg-[#40CFFF] px-5 py-3 text-sm font-semibold text-slate-900 transition hover:brightness-95">
+            <button 
+            onClick={handleStartNow}
+            className="rounded-2xl bg-[#40CFFF] px-5 py-3 text-sm font-semibold text-slate-900 transition hover:brightness-95">
               Probar plataforma
             </button>
           </div>
