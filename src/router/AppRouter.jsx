@@ -7,6 +7,7 @@ import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
 import About from "../pages/About";
 import Contact from "../pages/Contact";
+import NotFound from "../pages/NotFound";
 import Raffles from "../pages/Raffle";
 import Games from "../pages/Games";
 import Footer from "../components/Footer";
@@ -83,6 +84,8 @@ function AppRouter() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </>
