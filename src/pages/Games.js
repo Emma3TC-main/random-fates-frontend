@@ -1,10 +1,16 @@
 import { Link } from "react-router-dom";
+import "animate.css";
+
+import rouletteImg from "../assets/roulette.png";
+import randomImg from "../assets/random.png";
+import slotsImg from "../assets/slots.png";
 
 function Games() {
   const games = [
     {
       title: "Ruleta",
       slug: "roulette",
+      image: rouletteImg,
       description:
         "Ideal para transmisiones en vivo y sorteos visuales interactivos.",
       badge: "POPULAR",
@@ -15,6 +21,7 @@ function Games() {
     {
       title: "Selección Aleatoria",
       slug: "random-selection",
+      image: randomImg,
       description:
         "Perfecto para sorteos rápidos y selección masiva de participantes.",
       badge: "RÁPIDO",
@@ -25,6 +32,7 @@ function Games() {
     {
       title: "Slots",
       slug: "slots",
+      image: slotsImg,
       description:
         "Próximamente disponible para dinámicas gamificadas y premios.",
       badge: "PRÓXIMAMENTE",
@@ -35,24 +43,25 @@ function Games() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] px-6 py-8 md:px-10">
+    <div className="min-h-screen bg-gradient-to-b from-white via-sky-50 to-slate-100 px-6 py-8 md:px-10">
       {/* HEADER */}
-      <div className="mb-10 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+      <div className="mb-10 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center animate__animated animate__fadeInDown">
         <div>
           <h1 className="text-4xl font-bold tracking-tight text-slate-900">
             Games
           </h1>
+
           <p className="mt-2 text-slate-500">
             Gestiona y crea sorteos interactivos para tu comunidad.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <button className="rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
+          <button className="rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition duration-300 hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-md">
             Importar participantes
           </button>
 
-          <button className="rounded-2xl bg-[#40CFFF] px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:scale-[1.02] hover:shadow-md">
+          <button className="rounded-2xl bg-[#40CFFF] px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition duration-300 hover:scale-[1.03] hover:shadow-lg">
             + Nuevo Sorteo
           </button>
         </div>
@@ -63,38 +72,75 @@ function Games() {
         {games.map((game, index) => (
           <div
             key={index}
-            className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+            className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-500 hover:-translate-y-2 hover:shadow-2xl animate__animated animate__fadeInUp"
+            style={{
+              animationDelay: `${index * 0.15}s`,
+            }}
           >
             {/* IMAGE AREA */}
-            <div className="relative h-52 bg-gradient-to-br from-cyan-100 to-sky-50 p-5">
-              <div className="flex items-start justify-between">
+            <div className="relative h-60 overflow-hidden bg-gradient-to-br from-cyan-100 via-white to-sky-50 p-5">
+              {/* glow */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(64,207,255,0.25),transparent_45%)]" />
+
+              <div className="relative z-10 flex items-start justify-between">
                 <span
-                  className={`rounded-full px-3 py-1 text-xs font-semibold ${game.badgeColor}`}
+                  className={`rounded-full px-3 py-1 text-xs font-semibold backdrop-blur ${game.badgeColor}`}
                 >
                   {game.badge}
                 </span>
 
-                <div className="flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-slate-700 backdrop-blur">
+                <div className="flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-slate-700 shadow-sm backdrop-blur">
                   <span
-                    className={`h-2 w-2 rounded-full ${
+                    className={`h-2 w-2 rounded-full animate-pulse ${
                       game.available ? "bg-green-500" : "bg-slate-400"
                     }`}
                   />
+
                   {game.available ? "Disponible" : "En desarrollo"}
                 </div>
               </div>
 
-              {/* Placeholder Visual */}
-              <div className="mt-10 flex items-center justify-center">
-                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white shadow-inner">
-                  <div className="h-14 w-14 rounded-full border-8 border-[#40CFFF]" />
+              {/* GAME IMAGE */}
+              <div className="relative z-10 mt-6 flex items-center justify-center">
+                <div className="relative">
+                  {/* floating shadow */}
+                  <div className="absolute inset-0 scale-110 rounded-full bg-cyan-200/40 blur-3xl transition duration-500 group-hover:scale-125" />
+
+                  <img
+                    src={game.image}
+                    alt={game.title}
+                    className={`
+                      relative z-10 h-40 object-contain drop-shadow-2xl transition duration-700
+                      group-hover:scale-110
+                      ${
+                        game.slug === "roulette"
+                          ? "group-hover:rotate-[20deg]"
+                          : ""
+                      }
+                      ${
+                        game.slug === "slots"
+                          ? "group-hover:-translate-y-2"
+                          : ""
+                      }
+                      ${
+                        game.slug === "random-selection"
+                          ? "group-hover:rotate-3"
+                          : ""
+                      }
+                    `}
+                  />
                 </div>
               </div>
+
+              {/* ambient blur */}
+              <div className="absolute -bottom-10 left-1/2 h-24 w-24 -translate-x-1/2 rounded-full bg-cyan-300/20 blur-2xl" />
             </div>
 
             {/* CONTENT */}
             <div className="p-6">
-              <h3 className="text-xl font-bold text-slate-900">{game.title}</h3>
+              <h3 className="text-xl font-bold text-slate-900 transition group-hover:text-cyan-700">
+                {game.title}
+              </h3>
 
               <p className="mt-3 text-sm leading-relaxed text-slate-500">
                 {game.description}
@@ -105,7 +151,7 @@ function Games() {
                 {game.tags.map((tag, i) => (
                   <span
                     key={i}
-                    className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+                    className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 transition duration-300 hover:scale-105 hover:bg-slate-200"
                   >
                     {tag}
                   </span>
@@ -118,17 +164,17 @@ function Games() {
                   <>
                     <Link
                       to={`/games/${game.slug}`}
-                      className="flex-1 rounded-2xl bg-[#40CFFF] px-4 py-3 text-center text-sm font-semibold text-slate-900 transition hover:brightness-95"
+                      className="flex-1 rounded-2xl bg-[#40CFFF] px-4 py-3 text-center text-sm font-semibold text-slate-900 transition duration-300 hover:scale-[1.02] hover:brightness-95 hover:shadow-lg active:scale-[0.98]"
                     >
                       Usar este juego
                     </Link>
 
-                    <button className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
+                    <button className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition duration-300 hover:bg-slate-50 hover:shadow-md">
                       Vista previa
                     </button>
                   </>
                 ) : (
-                  <button className="w-full rounded-2xl border border-purple-200 bg-purple-50 px-4 py-3 text-sm font-semibold text-purple-700 transition hover:bg-purple-100">
+                  <button className="w-full rounded-2xl border border-purple-200 bg-purple-50 px-4 py-3 text-sm font-semibold text-purple-700 transition duration-300 hover:bg-purple-100 hover:shadow-md">
                     Notificarme cuando esté
                   </button>
                 )}
@@ -141,7 +187,7 @@ function Games() {
       {/* INFO SECTION */}
       <div className="mt-12 grid gap-6 lg:grid-cols-2">
         {/* LEFT */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition duration-300 hover:shadow-xl">
           <h2 className="text-2xl font-bold text-slate-900">¿Cómo funciona?</h2>
 
           <p className="mt-4 leading-relaxed text-slate-600">
@@ -170,13 +216,17 @@ function Games() {
                 desc: "Obtén resultados aleatorios y verificables en tiempo real.",
               },
             ].map((item, index) => (
-              <div key={index} className="flex gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#40CFFF] font-bold text-slate-900">
+              <div
+                key={index}
+                className="group flex gap-4 transition duration-300 hover:translate-x-1"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#40CFFF] font-bold text-slate-900 shadow-md transition duration-300 group-hover:scale-110">
                   {item.step}
                 </div>
 
                 <div>
                   <h4 className="font-semibold text-slate-900">{item.title}</h4>
+
                   <p className="mt-1 text-sm text-slate-500">{item.desc}</p>
                 </div>
               </div>
@@ -185,7 +235,7 @@ function Games() {
         </div>
 
         {/* RIGHT */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition duration-300 hover:shadow-xl">
           <h2 className="text-2xl font-bold text-slate-900">
             Ventajas por tipo
           </h2>
@@ -211,7 +261,7 @@ function Games() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="rounded-2xl border border-slate-200 bg-slate-50 p-5"
+                className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-lg"
               >
                 <h4 className="font-semibold text-slate-900">{item.title}</h4>
 
@@ -225,7 +275,7 @@ function Games() {
       </div>
 
       {/* CTA */}
-      <div className="mt-12 rounded-[32px] bg-[#15293E] p-8 md:p-10">
+      <div className="mt-12 overflow-hidden rounded-[32px] bg-gradient-to-r from-[#15293E] via-[#19324d] to-[#15293E] p-8 md:p-10">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h2 className="text-3xl font-bold text-white">
@@ -239,11 +289,11 @@ function Games() {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <button className="rounded-2xl border border-slate-600 bg-transparent px-5 py-3 text-sm font-medium text-white transition hover:bg-white/5">
+            <button className="rounded-2xl border border-slate-600 bg-transparent px-5 py-3 text-sm font-medium text-white transition duration-300 hover:bg-white/10">
               Ver mis sorteos
             </button>
 
-            <button className="rounded-2xl bg-[#40CFFF] px-5 py-3 text-sm font-semibold text-slate-900 transition hover:brightness-95">
+            <button className="rounded-2xl bg-[#40CFFF] px-5 py-3 text-sm font-semibold text-slate-900 transition duration-300 hover:scale-[1.03] hover:brightness-95 hover:shadow-xl">
               Crear sorteo
             </button>
           </div>
