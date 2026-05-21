@@ -12,6 +12,10 @@ import StatsSection from "../components/home/StatsSection";
 import LiveActivitySection from "../components/home/LiveActivitySection";
 import TestimonialCard from "../components/home/TestimonialCard";
 import CTASection from "../components/home/CTASection";
+import WhyRandomFatesSection from "../components/home/WhyRandomFatesSection";
+import HowItWorksSection from "../components/home/HowItWorksSection";
+import TrustSection from "../components/home/TrustSection";
+import PricingSection from "../components/home/PricingSection";
 
 function Home() {
   const { handleStartNow, handleCreateAccount, handleTryGames } = useStartNow();
@@ -118,6 +122,14 @@ function Home() {
           </div>
         </div>
       </section>
+
+      <WhyRandomFatesSection />
+
+      <HowItWorksSection />
+
+      <TrustSection />
+
+      <PricingSection />
 
       <CTASection handleCreateAccount={handleCreateAccount} />
     </div>

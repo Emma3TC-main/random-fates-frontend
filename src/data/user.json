@@ -1,9 +1,74 @@
+
 [
   {
     "id": 1,
-    "nombre": "Emma Torres",
-    "usuario": "user",
+    "nombre": "Emmanuel Torres",
+    "usuario": "emma3tc",
     "email": "emma@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": 2,
+    "nombre": "Carlos Ramirez",
+    "usuario": "carlosr",
+    "email": "carlos@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": 3,
+    "nombre": "Lucia Fernandez",
+    "usuario": "luciaf",
+    "email": "lucia@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": 4,
+    "nombre": "Andres Vega",
+    "usuario": "andresv",
+    "email": "andres@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": 5,
+    "nombre": "Sofia Morales",
+    "usuario": "sofiam",
+    "email": "sofia@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": 6,
+    "nombre": "Diego Castillo",
+    "usuario": "diegoc",
+    "email": "diego@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": 7,
+    "nombre": "Valeria Ruiz",
+    "usuario": "valeriar",
+    "email": "valeria@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": 8,
+    "nombre": "Mateo Herrera",
+    "usuario": "mateoh",
+    "email": "mateo@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": 9,
+    "nombre": "Camila Navarro",
+    "usuario": "camilan",
+    "email": "camila@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": 10,
+    "nombre": "Javier Lopez",
+    "usuario": "javierl",
+    "email": "javier@gmail.com",
     "password": "123456"
   }
 ]
+
