@@ -1,0 +1,1 @@
+Lógica de peticiones externas. Aquí residen las instancias de Axios/Fetch, interceptores y las funciones de llamadas a servicios.

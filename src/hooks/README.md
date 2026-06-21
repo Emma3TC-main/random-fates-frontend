@@ -1,0 +1,1 @@
+Custom Hooks. Lógica de estado compartida y efectos encapsulados para mantener los componentes limpios.
