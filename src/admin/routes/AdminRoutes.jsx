@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import AdminLogin from "../pages/AdminLogin";
+import AdminOtpVerify from "../pages/AdminOtpVerify";
 import AdminDashboard from "../pages/AdminDashboard";
 import AdminGames from "../pages/AdminGames";
 import AdminUsers from "../pages/AdminUsers";
@@ -11,6 +12,7 @@ function AdminRoutes() {
   return (
     <Routes>
       <Route path="login" element={<AdminLogin />} />
+      <Route path="otp" element={<AdminOtpVerify />} />
 
       <Route
         path="dashboard"

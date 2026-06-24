@@ -18,6 +18,10 @@ function AdminLogin() {
     try {
       setLoading(true);
       const result = await loginAdmin(form.email, form.password);
+      if (result?.requiresOtp) {
+        navigate("/admin/otp");
+        return;
+      }
       if (!result.success) {
         setError(result.message);
         return;
