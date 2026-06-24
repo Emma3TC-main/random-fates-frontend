@@ -1,52 +1,83 @@
-import { useState } from "react";
-
+import { useState, useRef, useEffect } from "react";
 import { randomWinner } from "../utils/randomWinner";
+import { getWinnerFromExecution } from "../utils/randomFatesFormat";
 
-export default function useRoulette(participants) {
+export default function useRoulette(participants, options = {}) {
+  const { executeBackend, onExecutionComplete } = options;
   const [spinning, setSpinning] = useState(false);
-
   const [winner, setWinner] = useState(null);
-
   const [history, setHistory] = useState([]);
-
   const [duration, setDuration] = useState(5000);
-
   const [rotation, setRotation] = useState(0);
+  const [execution, setExecution] = useState(null);
+  const [error, setError] = useState(null);
+  const [waitingForResult, setWaitingForResult] = useState(false);
+  const [frozenParticipants, setFrozenParticipants] = useState([]);
+  const timeoutRef = useRef(null);
+  const rafRef = useRef(null);
 
-  const startRoulette = () => {
-    if (participants.length === 0) return;
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
-    setSpinning(true);
-
-    setWinner(null);
-
-    const selectedWinner = randomWinner(participants);
-
-    const winnerIndex = participants.findIndex(
-      (p) => p.id === selectedWinner.id,
-    );
-
-    const segmentAngle = 360 / participants.length;
-
+  const rotateToWinner = (selectedWinner) => {
+    const winnerIndex = Math.max(0, participants.findIndex((p) => p.id === selectedWinner.id));
+    const segmentAngle = participants.length > 0 ? 360 / participants.length : 360;
     const targetAngle = winnerIndex * segmentAngle;
-
     const extraSpins = 360 * 6;
 
-    // Calcula la rotación total necesaria para que la ruleta se detenga en el ganador, asegurando que gire al menos 6 veces para un efecto visual agradable.
-    // La corrección se asegura de que la ruleta se detenga exactamente en el segmento del ganador, sin importar la rotación actual.
-    setRotation((prevRotation) => {
-      const currentRotation = ((prevRotation % 360) + 360) % 360;
-      const correction = (360 - ((currentRotation + targetAngle) % 360)) % 360;
-      return prevRotation + extraSpins + correction;
+    rafRef.current = requestAnimationFrame(() => {
+      setRotation((prevRotation) => {
+        const currentRotation = ((prevRotation % 360) + 360) % 360;
+        const correction = (360 - ((currentRotation + targetAngle) % 360)) % 360;
+        return prevRotation + extraSpins + correction;
+      });
     });
+  };
 
-    setTimeout(() => {
-      setWinner(selectedWinner);
+  const startRoulette = async () => {
+    if (participants.length === 0 || spinning) return;
 
-      setHistory((prev) => [selectedWinner, ...prev]);
+    setSpinning(true);
+    setWaitingForResult(true);
+    setWinner(null);
+    setError(null);
+    setFrozenParticipants(participants.slice());
 
+    try {
+      let selectedWinner;
+      let executionData = null;
+
+      if (executeBackend) {
+        executionData = await executeBackend();
+        selectedWinner = getWinnerFromExecution(executionData);
+        setExecution(executionData);
+      } else {
+        selectedWinner = randomWinner(participants);
+      }
+
+      setWaitingForResult(false);
+      if (!selectedWinner) throw new Error("No se pudo obtener un ganador.");
+      rotateToWinner(selectedWinner);
+
+      timeoutRef.current = setTimeout(() => {
+        setWinner(selectedWinner);
+        setHistory((prev) => [selectedWinner, ...prev]);
+        setSpinning(false);
+        timeoutRef.current = null;
+        if (executeBackend && typeof onExecutionComplete === "function") {
+          onExecutionComplete(executionData);
+        }
+      }, duration);
+    } catch (err) {
+      setError(err);
+      setWaitingForResult(false);
       setSpinning(false);
-    }, duration);
+      return null;
+    }
   };
 
   return {
@@ -58,5 +89,9 @@ export default function useRoulette(participants) {
     startRoulette,
     setWinner,
     rotation,
+    execution,
+    error,
+    waitingForResult,
+    frozenParticipants,
   };
 }

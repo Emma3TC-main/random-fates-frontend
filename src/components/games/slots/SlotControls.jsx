@@ -1,6 +1,6 @@
 import AnimatedButton from "../common/AnimatedButton";
 
-function SlotControls({ spinning, startSlots, duration, setDuration }) {
+function SlotControls({ spinning, startSlots, duration, setDuration, disabled = false }) {
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="grid gap-5 md:grid-cols-3">
@@ -29,8 +29,8 @@ function SlotControls({ spinning, startSlots, duration, setDuration }) {
         </div>
 
         <div className="flex items-end">
-          <AnimatedButton onClick={startSlots} disabled={spinning}>
-            {spinning ? "Girando slots..." : "Iniciar slots"}
+          <AnimatedButton onClick={startSlots} disabled={spinning || disabled}>
+            {spinning ? "Girando slots..." : disabled ? "Sorteo no disponible" : "Iniciar slots"}
           </AnimatedButton>
         </div>
       </div>

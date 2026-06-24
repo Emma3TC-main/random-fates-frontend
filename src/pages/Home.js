@@ -21,12 +21,12 @@ function Home() {
   const { handleStartNow, handleCreateAccount, handleTryGames } = useStartNow();
 
   useEffect(() => {
-    apiFetch("/api/test")
+    apiFetch("/health", { auth: false })
       .then((data) => {
-        console.log("API response:", data);
+        console.log("RandomFates API health:", data);
       })
       .catch((err) => {
-        console.error("API error:", err);
+        console.warn("RandomFates API health unavailable:", err.message);
       });
   }, []);
 

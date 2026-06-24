@@ -1,6 +1,6 @@
 import AnimatedButton from "../common/AnimatedButton";
 
-function RandomControls({ animating, startSelection, duration, setDuration }) {
+function RandomControls({ animating, startSelection, duration, setDuration, disabled = false }) {
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="grid gap-5 md:grid-cols-3">
@@ -29,8 +29,8 @@ function RandomControls({ animating, startSelection, duration, setDuration }) {
         </div>
 
         <div className="flex items-end">
-          <AnimatedButton onClick={startSelection} disabled={animating}>
-            {animating ? "Seleccionando..." : "Elegir ganador"}
+          <AnimatedButton onClick={startSelection} disabled={animating || disabled}>
+            {animating ? "Seleccionando..." : disabled ? "Sorteo no disponible" : "Elegir ganador"}
           </AnimatedButton>
         </div>
       </div>

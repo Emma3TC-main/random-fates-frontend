@@ -3,6 +3,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import Navbar from "../components/Navbar";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
+import OtpVerify from "../pages/OtpVerify";
 import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
 import About from "../pages/About";
@@ -15,6 +16,9 @@ import RouletteGame from "../pages/RouletteGame";
 import RandomSelectionGame from "../pages/RandomSelectionGame";
 import SlotsGame from "../pages/SlotsGame";
 import AdminRoutes from "../admin/routes/AdminRoutes";
+
+// Ruta temporal de pruebas, se eliminará en el futuro.
+import BackendFlowTest from "../pages/BackendFlowTest";
 
 function AppRouter() {
   return (
@@ -33,6 +37,7 @@ function AppRouter() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/auth/otp" element={<OtpVerify />} />
                 <Route path="/register" element={<Register />} />
 
                 {/* demás rutas */}
@@ -94,6 +99,8 @@ function AppRouter() {
                     </ProtectedRoute>
                   }
                 />
+
+                <Route path="/dev/backend-flow" element={<BackendFlowTest />} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>

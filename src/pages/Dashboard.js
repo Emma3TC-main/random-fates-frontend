@@ -1,325 +1,235 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Activity,
+  ArrowRight,
+  Crown,
+  FileSpreadsheet,
+  Gamepad2,
+  Plus,
+  RefreshCw,
+  ShieldCheck,
+  Sparkles,
+  Ticket,
+  Trophy,
+  Users,
+} from "lucide-react";
 import "animate.css";
 
-import {
-  Plus,
-  Upload,
-  Trophy,
-  Ticket,
-  Gamepad2,
-  FileSpreadsheet,
-  ShieldCheck,
-  LifeBuoy,
-  Crown,
-  Check,
-  Sparkles,
-  ArrowRight,
-  Activity,
-} from "lucide-react";
+import { dashboardService } from "../services/dashboardService";
+import { createPlayableDemoRaffle, demoSeed, ensureDemoAuth } from "../services/demoSeedService";
+import { getAuthUser } from "../services/authService";
+import { formatDate, getParticipantCount, getPrizeCount, labelState, labelType, shortId, stateStyles } from "../utils/randomFatesFormat";
 
 function Dashboard() {
+  const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [creatingDemo, setCreatingDemo] = useState(false);
+  const [error, setError] = useState("");
+
+  const user = getAuthUser();
+
+  const loadDashboard = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const data = await dashboardService.summary();
+      setSummary(data);
+    } catch (err) {
+      setError(err.message || "No se pudo cargar el dashboard.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    loadDashboard();
   }, []);
+
+  const raffles = useMemo(() => summary?.raffles || [], [summary]);
+  const latest = raffles.slice(0, 6);
+  const activePlayable = useMemo(() => raffles.find((raffle) => raffle.state === "ACTIVE"), [raffles]);
+
+  const handleCreateDemo = async () => {
+    try {
+      setCreatingDemo(true);
+      await ensureDemoAuth(user?.email || demoSeed.email, demoSeed.password);
+      await createPlayableDemoRaffle("ROULETTE");
+      await loadDashboard();
+    } catch (err) {
+      setError(err.message || "No se pudo crear el demo jugable.");
+    } finally {
+      setCreatingDemo(false);
+    }
+  };
 
   return (
     <div className="min-h-screen overflow-hidden bg-gradient-to-b from-gray-100 via-slate-100 to-cyan-50 p-6">
-      {/* BACKGROUND EFFECTS */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute left-0 top-0 h-[420px] w-[420px] rounded-full bg-cyan-300/10 blur-3xl" />
-
         <div className="absolute bottom-0 right-0 h-[350px] w-[350px] rounded-full bg-sky-300/10 blur-3xl" />
-
-        <div className="absolute left-1/2 top-1/3 h-[250px] w-[250px] -translate-x-1/2 rounded-full bg-cyan-200/10 blur-3xl" />
       </div>
 
-      {/* HEADER */}
-      <div className="animate__animated animate__fadeIn animate__faster mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+      <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center animate__animated animate__fadeIn animate__faster">
         <div>
           <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-100 px-4 py-2 text-sm font-semibold text-cyan-700 shadow-sm">
-            <Sparkles size={16} className="animate-pulse" />
-            Panel principal
+            <Sparkles size={16} className="animate-pulse" /> Panel principal conectado
           </div>
-
-          <h1 className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-3xl font-bold text-transparent">
-            Dashboard
-          </h1>
-
-          <p className="mt-1 text-sm text-gray-500">
-            Gestiona tus sorteos y participantes
-          </p>
+          <h1 className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-3xl font-bold text-transparent">Dashboard</h1>
+          <p className="mt-1 text-sm text-gray-500">Datos reales desde PostgreSQL vía API REST.</p>
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <button className="group flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-3 text-sm font-medium text-gray-800 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-lg animate__animated animate__fadeIn animate__faster">
-            <Upload
-              size={18}
-              className="transition duration-300 group-hover:-translate-y-0.5"
-            />
-            Importar participantes
+          <button onClick={loadDashboard} disabled={loading} className="group flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-3 text-sm font-medium text-gray-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-gray-50 disabled:opacity-60">
+            <RefreshCw size={18} className={loading ? "animate-spin" : ""} /> Refrescar
           </button>
-
-          <button className="group flex items-center gap-2 rounded-xl bg-cyan-400 px-5 py-3 text-sm font-semibold text-black shadow-md transition duration-300 hover:scale-[1.03] hover:bg-cyan-300 hover:shadow-cyan-200/60 animate__animated animate__fadeIn animate__faster">
-            <Plus
-              size={18}
-              className="transition duration-300 group-hover:rotate-90"
-            />
-            Nuevo Sorteo
+          <button onClick={handleCreateDemo} disabled={creatingDemo} className="group flex items-center gap-2 rounded-xl border border-cyan-200 bg-white px-5 py-3 text-sm font-semibold text-cyan-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-cyan-50 disabled:opacity-60">
+            <FileSpreadsheet size={18} /> {creatingDemo ? "Creando demo..." : "Crear demo jugable"}
           </button>
+          <Link to="/raffles" className="group flex items-center gap-2 rounded-xl bg-cyan-400 px-5 py-3 text-sm font-semibold text-black shadow-md transition hover:scale-[1.03] hover:bg-cyan-300">
+            <Plus size={18} /> Nuevo sorteo
+          </Link>
         </div>
       </div>
 
-      {/* KPI CARDS */}
+      {error && <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error}</div>}
+
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-        {/* Card 1 */}
-        <div className="animate__animated animate__fadeInUp animate__fast rounded-2xl border border-white/60 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold tracking-wide text-gray-500">
-              SORTEOS TOTALES
-            </p>
-
-            <div className="rounded-xl bg-cyan-100 p-2 text-cyan-600">
-              <Trophy size={18} />
-            </div>
-          </div>
-
-          <h2 className="mt-3 text-4xl font-bold text-gray-900">24</h2>
-
-          <div className="mt-4 inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
-            +3 esta semana
-          </div>
-        </div>
-
-        {/* Card 2 */}
-        <div className="animate__animated animate__fadeInUp animate__fast rounded-2xl border border-white/60 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold tracking-wide text-gray-500">
-              EN ESTADO LISTO
-            </p>
-
-            <div className="rounded-xl bg-blue-100 p-2 text-blue-600">
-              <ShieldCheck size={18} />
-            </div>
-          </div>
-
-          <h2 className="mt-3 text-4xl font-bold text-gray-900">5</h2>
-
-          <p className="mt-4 text-sm text-gray-500">Listos para ejecutar</p>
-        </div>
-
-        {/* Card 3 */}
-        <div className="animate__animated animate__fadeInUp animate__fast rounded-2xl border border-white/60 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold tracking-wide text-gray-500">
-              EN EJECUCIÓN
-            </p>
-
-            <div className="rounded-xl bg-cyan-100 p-2 text-cyan-600">
-              <Activity size={18} className="animate-pulse" />
-            </div>
-          </div>
-
-          <h2 className="mt-3 text-4xl font-bold text-gray-900">2</h2>
-
-          <div className="mt-4 inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
-            Streaming WS activo
-          </div>
-        </div>
-
-        {/* Card 4 */}
-        <div className="animate__animated animate__fadeInUp animate__fast rounded-2xl border border-white/60 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold tracking-wide text-gray-500">
-              ÚLTIMA EJECUCIÓN
-            </p>
-
-            <div className="rounded-xl bg-green-100 p-2 text-green-600">
-              <Check size={18} />
-            </div>
-          </div>
-
-          <h2 className="mt-3 text-2xl font-bold text-gray-900">Hoy · 14:22</h2>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
-              Éxito
-            </span>
-
-            <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
-              Sorteo #018
-            </span>
-          </div>
-        </div>
+        <KpiCard title="SORTEOS TOTALES" value={loading ? "…" : summary?.totalRaffles || 0} icon={<Trophy size={18} />} helper="Creados por tu usuario" />
+        <KpiCard title="PUBLICADOS" value={loading ? "…" : summary?.activeRaffles || 0} icon={<ShieldCheck size={18} />} helper="Listos para ejecutar" />
+        <KpiCard title="FINALIZADOS" value={loading ? "…" : summary?.finishedRaffles || 0} icon={<Activity size={18} />} helper="Con resultado y hash" />
+        <KpiCard title="PARTICIPANTES" value={loading ? "…" : summary?.totalParticipants || 0} icon={<Users size={18} />} helper="Acumulado en sorteos" />
       </div>
 
-      {/* MAIN CONTENT */}
       <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
-        {/* QUICK ACCESS */}
-        <div className="xl:col-span-2">
-          <div className="animate__animated animate__fadeInUp animate__fast rounded-2xl border border-white/60 bg-white p-6 shadow-sm transition duration-300 hover:shadow-xl">
-            <div className="mb-5">
-              <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
-                <Sparkles className="text-cyan-500" size={22} />
-                Accesos rápidos
-              </h2>
-
-              <p className="mt-1 text-sm text-gray-500">
-                Acciones frecuentes del sistema
-              </p>
+        <div className="xl:col-span-2 rounded-2xl border border-white/60 bg-white p-6 shadow-sm">
+          <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900"><Sparkles className="text-cyan-500" size={22} /> Acciones rápidas</h2>
+              <p className="mt-1 text-sm text-gray-500">Flujos ya disponibles.</p>
             </div>
+            {activePlayable && (
+              <Link to={`/games/roulette?raffleId=${activePlayable.id}`} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white hover:bg-slate-800">
+                Ejecutar activo <ArrowRight size={16} />
+              </Link>
+            )}
+          </div>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-              <QuickButton icon={<Trophy size={20} />} title="Crear Sorteo" />
-
-              <QuickButton icon={<Ticket size={20} />} title="Ir a Sorteos" />
-
-              <QuickButton icon={<Gamepad2 size={20} />} title="Ver Juegos" />
-
-              <QuickButton
-                icon={<FileSpreadsheet size={20} />}
-                title="Importar CSV"
-              />
-
-              <QuickButton
-                icon={<ShieldCheck size={20} />}
-                title="Verificar Hash"
-              />
-
-              <QuickButton icon={<LifeBuoy size={20} />} title="Soporte" />
-            </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <QuickButton to="/raffles" icon={<Trophy size={20} />} title="Crear sorteo" description="Schema real /raffles" />
+            <QuickButton to="/raffles" icon={<Ticket size={20} />} title="Gestionar sorteos" description="Premios y participantes" />
+            <QuickButton to="/games" icon={<Gamepad2 size={20} />} title="Abrir minijuegos" description="Ruleta, random y slots" />
+            <QuickButton to="/dev/backend-flow" icon={<FileSpreadsheet size={20} />} title="Panel técnico" description="Validación endpoint por endpoint" />
+            <QuickButton to="/games" icon={<ShieldCheck size={20} />} title="Verificar hash" description="Resultado público verificable" />
+            <QuickButton to="/admin/dashboard" icon={<Crown size={20} />} title="Admin" description="KPIs y usuarios reales" />
           </div>
         </div>
 
-        {/* PREMIUM */}
-        <div>
-          <div className="animate__animated animate__fadeInUp animate__fast relative overflow-hidden rounded-2xl bg-slate-900 p-6 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl">
-            {/* glow */}
-            <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-cyan-400/10 blur-3xl" />
-
-            <div className="relative z-10">
-              <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-cyan-400/20 p-3 text-cyan-300 transition duration-300 hover:scale-110">
-                  <Crown size={24} />
-                </div>
-
-                <div>
-                  <h2 className="text-xl font-bold text-white">
-                    Mejora a Premium
-                  </h2>
-
-                  <p className="text-sm text-slate-400">
-                    Desbloquea herramientas avanzadas
-                  </p>
-                </div>
+        <div className="relative overflow-hidden rounded-2xl bg-slate-900 p-6 shadow-lg">
+          <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-cyan-400/10 blur-3xl" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-3">
+              <div className="rounded-xl bg-cyan-400/20 p-3 text-cyan-300"><Crown size={24} /></div>
+              <div>
+                <h2 className="text-xl font-bold text-white">Estado de cuenta</h2>
+                <p className="text-sm text-slate-400">{user?.email}</p>
               </div>
-
-              <div className="mt-6 space-y-4">
-                <Benefit text="Importar CSV/XLSX" />
-                <Benefit text="Hasta 50 000 participantes" />
-                <Benefit text="Historial extendido" />
-                <Benefit text="Soporte prioritario" />
-              </div>
-
-              <button className="group mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-400 px-4 py-3 font-semibold text-black transition duration-300 hover:scale-[1.02] hover:bg-cyan-300">
-                Ir a Premium
-                <ArrowRight
-                  size={18}
-                  className="transition duration-300 group-hover:translate-x-1"
-                />
-              </button>
             </div>
+            <div className="mt-6 space-y-3 text-sm text-slate-300">
+              <InfoLine label="Rol" value={user?.role || "USER"} />
+              <InfoLine label="Suscripción" value={user?.subscriptionStatus || "EXPIRED"} />
+              <InfoLine label="Seed demo" value={demoSeed.email} />
+            </div>
+            <Link to="/raffles" className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-400 px-4 py-3 font-semibold text-black transition hover:bg-cyan-300">Gestionar sorteos <ArrowRight size={18} /></Link>
           </div>
         </div>
       </div>
 
-      {/* RECENT ACTIVITY */}
-      <div className="animate__animated animate__fadeInUp animate__fast mt-6 rounded-2xl border border-white/60 bg-white p-6 shadow-sm transition duration-300 hover:shadow-xl">
-        <div className="mb-5">
-          <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
-            <Activity className="text-cyan-500" size={22} />
-            Actividad reciente
-          </h2>
-
-          <p className="mt-1 text-sm text-gray-500">
-            Últimos eventos del sistema
-          </p>
+      <div className="mt-6 rounded-2xl border border-white/60 bg-white p-6 shadow-sm">
+        <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900"><Activity className="text-cyan-500" size={22} /> Sorteos recientes</h2>
+            <p className="mt-1 text-sm text-gray-500">Últimos registros devueltos por GET /raffles.</p>
+          </div>
+          <Link to="/raffles" className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Ver todos</Link>
         </div>
 
-        <div className="divide-y divide-gray-100">
-          <ActivityItem
-            title="Participantes cargados en 'Black Friday'"
-            description="1284 entradas vía CSV"
-            time="Hoy · 11:08"
-          />
-
-          <ActivityItem
-            title="Sorteo '#018' ejecutado correctamente"
-            description="Se seleccionaron 3 ganadores"
-            time="Hoy · 09:32"
-          />
-
-          <ActivityItem
-            title="Nuevo sorteo creado"
-            description="Campaña 'Gaming Night'"
-            time="Ayer · 18:45"
-          />
-
-          <ActivityItem
-            title="Verificación hash completada"
-            description="Integridad validada sin errores"
-            time="Ayer · 16:20"
-          />
-        </div>
+        {loading ? (
+          <div className="rounded-2xl bg-slate-50 p-8 text-center text-slate-500">Cargando sorteos...</div>
+        ) : latest.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-10 text-center">
+            <h3 className="text-lg font-semibold text-slate-900">Aún no tienes sorteos creados</h3>
+            <p className="mt-2 text-slate-500">Crea un demo jugable o registra tu primer sorteo.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[760px]">
+              <thead className="border-b text-left text-sm text-slate-500">
+                <tr>
+                  <th className="p-5">Sorteo</th>
+                  <th>Tipo</th>
+                  <th>Estado</th>
+                  <th>Participantes</th>
+                  <th>Premios</th>
+                  <th>Creado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {latest.map((raffle) => (
+                  <tr key={raffle.id} className="border-b transition hover:bg-slate-50">
+                    <td className="p-5">
+                      <div className="font-semibold text-slate-900">{raffle.title}</div>
+                      <div className="text-sm text-slate-500">ID {shortId(raffle.id)}</div>
+                    </td>
+                    <td><span className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">{labelType(raffle.type)}</span></td>
+                    <td><span className={`rounded-full border px-3 py-1 text-xs font-semibold ${stateStyles[raffle.state]}`}>{labelState(raffle.state)}</span></td>
+                    <td className="font-medium text-slate-700">{getParticipantCount(raffle)}</td>
+                    <td className="font-medium text-slate-700">{getPrizeCount(raffle)}</td>
+                    <td className="text-slate-500">{formatDate(raffle.createdAt)}</td>
+                    <td>
+                      <div className="flex gap-2">
+                        <Link to={`/raffles?raffleId=${raffle.id}`} className="rounded-xl border px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-white">Gestionar</Link>
+                        {raffle.state === "ACTIVE" && <Link to={`/games/roulette?raffleId=${raffle.id}`} className="rounded-xl bg-cyan-400 px-3 py-2 text-xs font-semibold text-slate-900">Ejecutar</Link>}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-/* QUICK BUTTON */
-function QuickButton({ icon, title }) {
+function KpiCard({ title, value, icon, helper }) {
   return (
-    <button className="group animate__animated animate__fadeIn animate__fast flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-4 text-left transition duration-300 hover:-translate-y-1 hover:border-cyan-300 hover:bg-cyan-50 hover:shadow-lg">
-      <div className="rounded-xl bg-gray-100 p-3 text-gray-700 transition duration-300 group-hover:scale-110 group-hover:bg-cyan-100 group-hover:text-cyan-700">
-        {icon}
+    <div className="rounded-2xl border border-white/60 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold tracking-wide text-gray-500">{title}</p>
+        <div className="rounded-xl bg-cyan-100 p-2 text-cyan-600">{icon}</div>
       </div>
-
-      <span className="font-medium text-gray-800 transition duration-300 group-hover:text-cyan-700">
-        {title}
-      </span>
-    </button>
-  );
-}
-
-/* BENEFITS */
-function Benefit({ text }) {
-  return (
-    <div className="animate__animated animate__fadeIn animate__fast flex items-center gap-3">
-      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-green-500 shadow-sm">
-        <Check size={12} className="text-white" />
-      </div>
-
-      <span className="text-sm text-slate-300">{text}</span>
+      <h2 className="mt-3 text-4xl font-bold text-gray-900">{value}</h2>
+      <p className="mt-4 text-sm text-gray-500">{helper}</p>
     </div>
   );
 }
 
-/* ACTIVITY ITEM */
-function ActivityItem({ title, description, time }) {
+function QuickButton({ icon, title, description, to }) {
   return (
-    <div className="group animate__animated animate__fadeIn animate__fast flex flex-col justify-between gap-3 py-4 transition duration-300 hover:px-2 md:flex-row md:items-center">
-      <div>
-        <h3 className="font-medium text-gray-900 transition duration-300 group-hover:text-cyan-700">
-          {title}
-        </h3>
-
-        <p className="mt-1 text-sm text-gray-500">{description}</p>
-      </div>
-
-      <span className="text-sm text-gray-400 transition duration-300 group-hover:text-cyan-500">
-        {time}
-      </span>
-    </div>
+    <Link to={to} className="group rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:-translate-y-1 hover:border-cyan-200 hover:bg-white hover:shadow-lg">
+      <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-100 text-cyan-700 group-hover:scale-105">{icon}</div>
+      <h3 className="font-bold text-slate-900">{title}</h3>
+      <p className="mt-1 text-sm text-slate-500">{description}</p>
+    </Link>
   );
+}
+
+function InfoLine({ label, value }) {
+  return <div className="flex items-center justify-between rounded-xl bg-white/5 px-4 py-3"><span className="text-slate-400">{label}</span><span className="font-semibold text-white">{value}</span></div>;
 }
 
 export default Dashboard;
