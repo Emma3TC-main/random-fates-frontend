@@ -26,6 +26,18 @@ function Login() {
     try {
       setLoading(true);
       const result = await loginUser(email.trim(), password);
+
+      // If backend requires OTP, save challenge token temporarily and redirect
+      if (result?.requiresOtp) {
+        sessionStorage.setItem("auth_challenge_token", result.challengeToken);
+        sessionStorage.setItem("auth_pending_email", email.trim());
+        if (result.expiresInSeconds) sessionStorage.setItem("auth_otp_expires", String(result.expiresInSeconds));
+        if (result.delivery) sessionStorage.setItem("auth_otp_delivery", JSON.stringify(result.delivery));
+
+        navigate("/auth/otp");
+        return;
+      }
+
       const target = location.state?.from || (result.user?.role === "ADMIN" ? "/admin/dashboard" : "/dashboard");
       navigate(target, { replace: true });
     } catch (err) {

@@ -12,6 +12,10 @@ export const endpoints = {
     refresh: "/auth/refresh",
     logout: "/auth/logout",
     me: "/auth/me",
+    otp: {
+      verify: "/auth/otp/verify",
+      resend: "/auth/otp/resend",
+    },
   },
 
   raffles: {

@@ -3,6 +3,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import Navbar from "../components/Navbar";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
+import OtpVerify from "../pages/OtpVerify";
 import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
 import About from "../pages/About";
@@ -36,6 +37,7 @@ function AppRouter() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/auth/otp" element={<OtpVerify />} />
                 <Route path="/register" element={<Register />} />
 
                 {/* demás rutas */}

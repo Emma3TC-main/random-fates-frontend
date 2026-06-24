@@ -19,8 +19,36 @@ export const loginUser = async (email, password) => {
     body: { email, password },
   });
 
+  // If the backend requires OTP, do not create a session yet.
+  if (data?.requiresOtp) {
+    return data;
+  }
+
+  // Otherwise backend returned tokens -> set session as before
   tokenStore.setSession(data);
   return { success: true, user: data.user, tokens: data.tokens };
+};
+
+export const verifyOtp = async (challengeToken, otp) => {
+  const data = await getData(endpoints.auth.otp.verify, {
+    method: "POST",
+    auth: false,
+    body: { challengeToken, otp },
+  });
+
+  // Successful verification returns user + tokens
+  tokenStore.setSession(data);
+  return { success: true, user: data.user, tokens: data.tokens };
+};
+
+export const resendOtp = async (challengeToken) => {
+  const data = await getData(endpoints.auth.otp.resend, {
+    method: "POST",
+    auth: false,
+    body: { challengeToken },
+  });
+
+  return data;
 };
 
 export const refreshSession = async () => {
