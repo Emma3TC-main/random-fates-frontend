@@ -7,16 +7,20 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^13.5.0",
+    "animate.css": "^4.1.1",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^1.14.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-router-dom": "^7.14.1",
+    "react-router-dom": "^6.30.3",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set PORT=5173 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "lint": "eslint src/**/*.{js,jsx}",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -39,6 +43,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.5.0",
+    "eslint": "^8.57.1",
     "postcss": "^8.5.10",
     "tailwindcss": "^3.4.19"
   }

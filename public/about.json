@@ -1,0 +1,110 @@
+{
+  "values": [
+    {
+      "id": 1,
+      "title": "Transparencia",
+      "description": "Creamos sorteos claros y verificables para generar confianza en cada resultado."
+    },
+    {
+      "id": 2,
+      "title": "Accesibilidad",
+      "description": "Buscamos que cualquier persona pueda crear dinámicas profesionales sin herramientas complejas."
+    },
+    {
+      "id": 3,
+      "title": "Experiencia visual",
+      "description": "Diseñamos interfaces modernas y dinámicas para hacer los sorteos más atractivos."
+    },
+    {
+      "id": 4,
+      "title": "Escalabilidad",
+      "description": "La plataforma está preparada para crecer junto a comunidades, marcas y eventos digitales."
+    }
+  ],
+
+  "technologies": [
+    {
+      "id": 1,
+      "name": "React + Vite"
+    },
+    {
+      "id": 2,
+      "name": "TailwindCSS"
+    },
+    {
+      "id": 3,
+      "name": "Node.js"
+    },
+    {
+      "id": 4,
+      "name": "Socket.io"
+    },
+    {
+      "id": 5,
+      "name": "PostgreSQL"
+    },
+    {
+      "id": 6,
+      "name": "Prisma ORM"
+    }
+  ],
+
+  "journey": [
+    {
+      "id": 1,
+      "step": "1",
+      "title": "Detectamos un problema",
+      "desc": "Muchos sorteos digitales todavía dependen de procesos manuales y poco transparentes."
+    },
+    {
+      "id": 2,
+      "step": "2",
+      "title": "Diseñamos una solución",
+      "desc": "Creamos una plataforma enfocada en automatización, claridad y experiencia moderna."
+    },
+    {
+      "id": 3,
+      "step": "3",
+      "title": "Construimos RandomFates",
+      "desc": "Un sistema pensado para simplificar dinámicas promocionales y mejorar el engagement."
+    }
+  ],
+
+  "missionFeatures": [
+    {
+      "id": 1,
+      "text": "Interfaz moderna y fácil de usar"
+    },
+    {
+      "id": 2,
+      "text": "Resultados transparentes"
+    },
+    {
+      "id": 3,
+      "text": "Automatización de participantes"
+    },
+    {
+      "id": 4,
+      "text": "Experiencias interactivas"
+    }
+  ],
+
+  "visionFeatures": [
+    {
+      "id": 1,
+      "text": "Gamificación moderna"
+    },
+    {
+      "id": 2,
+      "text": "Experiencia en tiempo real"
+    },
+    {
+      "id": 3,
+      "text": "Mayor engagement"
+    },
+    {
+      "id": 4,
+      "text": "Escalable y adaptable"
+    }
+  ]
+}
