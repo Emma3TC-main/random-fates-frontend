@@ -1,6 +1,6 @@
 import AnimatedButton from "../common/AnimatedButton";
 
-function RouletteControls({ spinning, startRoulette, duration, setDuration }) {
+function RouletteControls({ spinning, startRoulette, duration, setDuration, disabled = false }) {
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="grid gap-5 md:grid-cols-3">
@@ -64,8 +64,8 @@ function RouletteControls({ spinning, startRoulette, duration, setDuration }) {
         </div>
 
         <div className="flex items-end">
-          <AnimatedButton onClick={startRoulette} disabled={spinning}>
-            {spinning ? "Girando..." : "Iniciar sorteo"}
+          <AnimatedButton onClick={startRoulette} disabled={spinning || disabled}>
+            {spinning ? "Girando..." : disabled ? "Sorteo no disponible" : "Iniciar sorteo"}
           </AnimatedButton>
         </div>
       </div>

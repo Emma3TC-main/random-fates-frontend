@@ -1,11 +1,11 @@
-import { Navigate } from "react-router-dom";
-import { getAuthUser } from "../services/authService";
+import { Navigate, useLocation } from "react-router-dom";
+import { isAuthenticated } from "../services/authService";
 
 function ProtectedRoute({ children }) {
-  const user = getAuthUser();
+  const location = useLocation();
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 
   return children;

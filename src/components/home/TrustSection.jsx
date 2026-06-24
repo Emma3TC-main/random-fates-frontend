@@ -11,7 +11,7 @@ function TrustSection() {
 
             <p className="text-muted-foreground">
               Cada ejecución guarda un registro verificable e inmutable
-              firmado por el backend.
+              validado por el sistema.
             </p>
           </div>
 
@@ -51,7 +51,7 @@ function TrustSection() {
           </h2>
 
           <p className="mb-10 text-lg text-muted-foreground">
-            Nada se decide en el navegador. El backend es la fuente
+            Nada se decide en el navegador. El sistema es la fuente
             de verdad.
           </p>
 

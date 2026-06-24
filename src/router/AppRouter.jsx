@@ -16,6 +16,9 @@ import RandomSelectionGame from "../pages/RandomSelectionGame";
 import SlotsGame from "../pages/SlotsGame";
 import AdminRoutes from "../admin/routes/AdminRoutes";
 
+// Ruta temporal de pruebas, se eliminará en el futuro.
+import BackendFlowTest from "../pages/BackendFlowTest";
+
 function AppRouter() {
   return (
     <>
@@ -94,6 +97,8 @@ function AppRouter() {
                     </ProtectedRoute>
                   }
                 />
+
+                <Route path="/dev/backend-flow" element={<BackendFlowTest />} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>

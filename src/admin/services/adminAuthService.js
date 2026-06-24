@@ -1,27 +1,24 @@
-const ADMIN_TOKEN_KEY = "admin_token";
+import { getAuthUser, isAdminUser, loginUser, logoutUser } from "../../services/authService";
 
-export function loginAdmin(email, password) {
-  if (email === "admin@randomfates.com" && password === "admin123") {
-    const fakeToken = "rf_admin_token";
+export async function loginAdmin(email, password) {
+  const result = await loginUser(email, password);
 
-    localStorage.setItem(ADMIN_TOKEN_KEY, fakeToken);
-
+  if (result.user?.role !== "ADMIN") {
+    await logoutUser();
     return {
-      success: true,
-      token: fakeToken,
+      success: false,
+      message:
+        "El usuario existe, pero no tiene rol ADMIN. Promuévelo en Supabase antes de entrar al panel.",
     };
   }
 
-  return {
-    success: false,
-    message: "Credenciales inválidas",
-  };
+  return { success: true, user: result.user, tokens: result.tokens };
 }
 
-export function logoutAdmin() {
-  localStorage.removeItem(ADMIN_TOKEN_KEY);
+export async function logoutAdmin() {
+  await logoutUser();
 }
 
 export function isAdminAuthenticated() {
-  return !!localStorage.getItem(ADMIN_TOKEN_KEY);
+  return Boolean(getAuthUser() && isAdminUser());
 }

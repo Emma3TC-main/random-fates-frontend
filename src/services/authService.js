@@ -1,87 +1,64 @@
-import userData from "../data/user.json";
+import { apiFetch, getData, tokenStore } from "../api/client";
+import { endpoints } from "../api/endpoints";
 
-/* Obtener usuarios actualizados */
-export const getUsers = () => {
+export const registerUser = async ({ email, password }) => {
+  const data = await getData(endpoints.auth.register, {
+    method: "POST",
+    auth: false,
+    body: { email, password },
+  });
+
+  tokenStore.setSession(data);
+  return { success: true, user: data.user, tokens: data.tokens };
+};
+
+export const loginUser = async (email, password) => {
+  const data = await getData(endpoints.auth.login, {
+    method: "POST",
+    auth: false,
+    body: { email, password },
+  });
+
+  tokenStore.setSession(data);
+  return { success: true, user: data.user, tokens: data.tokens };
+};
+
+export const refreshSession = async () => {
+  const refreshToken = tokenStore.getRefreshToken();
+  if (!refreshToken) return null;
+
+  const data = await getData(endpoints.auth.refresh, {
+    method: "POST",
+    auth: false,
+    body: { refreshToken },
+  });
+
+  tokenStore.setSession(data);
+  return data;
+};
+
+export const logoutUser = async () => {
+  const refreshToken = tokenStore.getRefreshToken();
+
   try {
-    const users = localStorage.getItem("users");
-
-    // Si ya existen usuarios en localStorage, los usamos
-    if (users) {
-      return JSON.parse(users);
+    if (tokenStore.getAccessToken()) {
+      await apiFetch(endpoints.auth.logout, {
+        method: "POST",
+        body: { refreshToken },
+      });
     }
-
-    // Si es la primera vez y está vacío, inicializamos con el JSON
-    localStorage.setItem("users", JSON.stringify(userData));
-    return userData;
-  } catch (error) {
-    console.error("Error obteniendo usuarios:", error);
-    return userData;
+  } finally {
+    tokenStore.clearSession();
   }
 };
 
-/* Login */
-export const loginUser = (usuario, password) => {
-  const users = getUsers();
+export const getAuthUser = () => tokenStore.getUser();
 
-  // Buscamos coincidencia exacta de usuario y contraseña (ambos como strings)
-  const user = users.find(
-    (u) => u.usuario === usuario && String(u.password) === String(password),
-  );
-
-  if (user) {
-    localStorage.setItem("authUser", JSON.stringify(user));
-    return user;
-  }
-
-  return null;
+export const syncAuthUser = async () => {
+  const user = await getData(endpoints.auth.me);
+  tokenStore.setSession({ user, tokens: {} });
+  return user;
 };
 
-/* Register */
-export const registerUser = (newUser) => {
-  const users = getUsers();
-
-  const userExists = users.some(
-    (u) =>
-      u.usuario.toLowerCase() === newUser.usuario.toLowerCase() ||
-      u.email.toLowerCase() === newUser.email.toLowerCase(),
-  );
-
-  if (userExists) {
-    return {
-      success: false,
-      message: "El usuario o correo ya existe",
-    };
-  }
-
-  const updatedUsers = [
-    ...users,
-    {
-      id: Date.now(),
-      ...newUser,
-    },
-  ];
-
-  localStorage.setItem("users", JSON.stringify(updatedUsers));
-
-  // Auto-loguear al usuario recién registrado
-  localStorage.setItem(
-    "authUser",
-    JSON.stringify(updatedUsers[updatedUsers.length - 1]),
-  );
-
-  return {
-    success: true,
-    message: "Usuario registrado exitosamente",
-  };
-};
-
-/* Logout */
-export const logoutUser = () => {
-  localStorage.removeItem("authUser");
-};
-
-/* User Actual */
-export const getAuthUser = () => {
-  const user = localStorage.getItem("authUser");
-  return user ? JSON.parse(user) : null;
-};
+export const isAuthenticated = () => Boolean(tokenStore.getAccessToken());
+export const isAdminUser = () => getAuthUser()?.role === "ADMIN";

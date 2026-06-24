@@ -1,80 +1,63 @@
-import { useState, useRef, useEffect } from "react";
-
+import { useState } from "react";
 import { randomWinner } from "../utils/randomWinner";
+import { getWinnerFromExecution } from "../utils/randomFatesFormat";
 
-export default function useRoulette(participants) {
+export default function useRoulette(participants, options = {}) {
+  const { executeBackend } = options;
   const [spinning, setSpinning] = useState(false);
-
   const [winner, setWinner] = useState(null);
-
   const [history, setHistory] = useState([]);
-
   const [duration, setDuration] = useState(5000);
-
   const [rotation, setRotation] = useState(0);
+  const [execution, setExecution] = useState(null);
+  const [error, setError] = useState(null);
 
-  // Congela los participantes en el momento de iniciar la ruleta para evitar re-render
-  // que cambie la distribución de segmentos durante la animación.
-  const [frozenParticipants, setFrozenParticipants] = useState([]);
-
-  const timeoutRef = useRef(null);
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
-
-  const startRoulette = () => {
-    if (participants.length === 0) return;
-
-    setSpinning(true);
-
-    setWinner(null);
-
-    // Tomar snapshot de participantes para usar durante la animación
-    setFrozenParticipants(participants.slice());
-
-    const selectedWinner = randomWinner(participants);
-
-    const winnerIndex = participants.findIndex((p) => p.id === selectedWinner.id);
-
-    const segmentAngle = 360 / participants.length;
-
+  const rotateToWinner = (selectedWinner) => {
+    const winnerIndex = Math.max(0, participants.findIndex((p) => p.id === selectedWinner.id));
+    const segmentAngle = participants.length > 0 ? 360 / participants.length : 360;
     const targetAngle = winnerIndex * segmentAngle;
-
     const extraSpins = 360 * 6;
 
-    // Para asegurar que la transición CSS se aplique correctamente en todos los navegadores,
-    // actualizamos la rotación en el siguiente frame visual.
-    requestAnimationFrame(() => {
-      setRotation((prevRotation) => {
-        const currentRotation = ((prevRotation % 360) + 360) % 360;
-        const correction = (360 - ((currentRotation + targetAngle) % 360)) % 360;
-        return prevRotation + extraSpins + correction;
-      });
+    setRotation((prevRotation) => {
+      const currentRotation = ((prevRotation % 360) + 360) % 360;
+      const correction = (360 - ((currentRotation + targetAngle) % 360)) % 360;
+      return prevRotation + extraSpins + correction;
     });
+  };
 
-    // Guardar timeout para limpieza y control
-    timeoutRef.current = setTimeout(() => {
-      setWinner(selectedWinner);
+  const startRoulette = async () => {
+    if (participants.length === 0 || spinning) return;
 
-      setHistory((prev) => [selectedWinner, ...prev]);
+    setSpinning(true);
+    setWinner(null);
+    setError(null);
 
+    try {
+      let selectedWinner;
+      let executionData = null;
+
+      if (executeBackend) {
+        executionData = await executeBackend();
+        selectedWinner = getWinnerFromExecution(executionData);
+        setExecution(executionData);
+      } else {
+        selectedWinner = randomWinner(participants);
+      }
+
+      if (!selectedWinner) throw new Error("No se pudo obtener un ganador.");
+      rotateToWinner(selectedWinner);
+
+      setTimeout(() => {
+        setWinner(selectedWinner);
+        setHistory((prev) => [selectedWinner, ...prev]);
+        setSpinning(false);
+      }, duration);
+    } catch (err) {
+      setError(err);
       setSpinning(false);
-      timeoutRef.current = null;
-    }, duration);
+      return null;
+    }
   };
 
-  return {
-    spinning,
-    winner,
-    history,
-    duration,
-    setDuration,
-    startRoulette,
-    setWinner,
-    rotation,
-    frozenParticipants,
-  };
+  return { spinning, winner, history, duration, setDuration, startRoulette, setWinner, rotation, execution, error };
 }
