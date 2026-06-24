@@ -24,6 +24,7 @@ export default function RouletteGame() {
     startRoulette,
     setWinner,
     rotation,
+    frozenParticipants,
   } = useRoulette(participants);
 
   if (loading) {
@@ -51,12 +52,12 @@ export default function RouletteGame() {
           <div className="space-y-8">
             <div className="rounded-[36px] border border-slate-200 bg-white p-10 shadow-sm">
               <RouletteWheel
-                spinning={spinning}
-                participants={participants}
-                winner={winner}
-                rotation={rotation}
-                duration={duration}
-              />
+                  spinning={spinning}
+                  participants={spinning ? frozenParticipants : participants}
+                  winner={winner}
+                  rotation={rotation}
+                  duration={duration}
+                />
             </div>
 
             <RouletteControls
