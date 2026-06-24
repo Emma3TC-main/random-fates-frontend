@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { randomWinner } from "../utils/randomWinner";
 import { getWinnerFromExecution } from "../utils/randomFatesFormat";
 
 export default function useRoulette(participants, options = {}) {
-  const { executeBackend } = options;
+  const { executeBackend, onExecutionComplete } = options;
   const [spinning, setSpinning] = useState(false);
   const [winner, setWinner] = useState(null);
   const [history, setHistory] = useState([]);
@@ -11,6 +11,16 @@ export default function useRoulette(participants, options = {}) {
   const [rotation, setRotation] = useState(0);
   const [execution, setExecution] = useState(null);
   const [error, setError] = useState(null);
+  const [frozenParticipants, setFrozenParticipants] = useState([]);
+  const timeoutRef = useRef(null);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   const rotateToWinner = (selectedWinner) => {
     const winnerIndex = Math.max(0, participants.findIndex((p) => p.id === selectedWinner.id));
@@ -18,10 +28,12 @@ export default function useRoulette(participants, options = {}) {
     const targetAngle = winnerIndex * segmentAngle;
     const extraSpins = 360 * 6;
 
-    setRotation((prevRotation) => {
-      const currentRotation = ((prevRotation % 360) + 360) % 360;
-      const correction = (360 - ((currentRotation + targetAngle) % 360)) % 360;
-      return prevRotation + extraSpins + correction;
+    rafRef.current = requestAnimationFrame(() => {
+      setRotation((prevRotation) => {
+        const currentRotation = ((prevRotation % 360) + 360) % 360;
+        const correction = (360 - ((currentRotation + targetAngle) % 360)) % 360;
+        return prevRotation + extraSpins + correction;
+      });
     });
   };
 
@@ -31,6 +43,7 @@ export default function useRoulette(participants, options = {}) {
     setSpinning(true);
     setWinner(null);
     setError(null);
+    setFrozenParticipants(participants.slice());
 
     try {
       let selectedWinner;
@@ -47,10 +60,14 @@ export default function useRoulette(participants, options = {}) {
       if (!selectedWinner) throw new Error("No se pudo obtener un ganador.");
       rotateToWinner(selectedWinner);
 
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         setWinner(selectedWinner);
         setHistory((prev) => [selectedWinner, ...prev]);
         setSpinning(false);
+        timeoutRef.current = null;
+        if (executeBackend && typeof onExecutionComplete === "function") {
+          onExecutionComplete(executionData);
+        }
       }, duration);
     } catch (err) {
       setError(err);
@@ -59,5 +76,17 @@ export default function useRoulette(participants, options = {}) {
     }
   };
 
-  return { spinning, winner, history, duration, setDuration, startRoulette, setWinner, rotation, execution, error };
+  return {
+    spinning,
+    winner,
+    history,
+    duration,
+    setDuration,
+    startRoulette,
+    setWinner,
+    rotation,
+    execution,
+    error,
+    frozenParticipants,
+  };
 }
