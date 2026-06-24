@@ -42,7 +42,7 @@ export default function RouletteGame() {
         <div className="grid gap-8 lg:grid-cols-[1.4fr_0.8fr]">
           <div className="space-y-8">
             <div className="rounded-[36px] border border-slate-200 bg-white p-10 shadow-sm">
-              <RouletteWheel spinning={roulette.spinning} participants={roulette.spinning ? roulette.frozenParticipants : participants} winner={roulette.winner} rotation={roulette.rotation} duration={roulette.duration} />
+              <RouletteWheel loadingAnimation={roulette.waitingForResult} spinning={roulette.spinning} participants={roulette.spinning ? roulette.frozenParticipants : participants} winner={roulette.winner} rotation={roulette.rotation} duration={roulette.duration} />
             </div>
             {!canExecute && <Warning text="Este sorteo ya no está ACTIVE o no tiene participantes. Crea/publica otro sorteo para ejecutar." />}
             <RouletteControls spinning={roulette.spinning} startRoulette={roulette.startRoulette} duration={roulette.duration} setDuration={roulette.setDuration} disabled={!canExecute} />

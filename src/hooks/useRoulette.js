@@ -11,6 +11,7 @@ export default function useRoulette(participants, options = {}) {
   const [rotation, setRotation] = useState(0);
   const [execution, setExecution] = useState(null);
   const [error, setError] = useState(null);
+  const [waitingForResult, setWaitingForResult] = useState(false);
   const [frozenParticipants, setFrozenParticipants] = useState([]);
   const timeoutRef = useRef(null);
   const rafRef = useRef(null);
@@ -41,6 +42,7 @@ export default function useRoulette(participants, options = {}) {
     if (participants.length === 0 || spinning) return;
 
     setSpinning(true);
+    setWaitingForResult(true);
     setWinner(null);
     setError(null);
     setFrozenParticipants(participants.slice());
@@ -57,6 +59,7 @@ export default function useRoulette(participants, options = {}) {
         selectedWinner = randomWinner(participants);
       }
 
+      setWaitingForResult(false);
       if (!selectedWinner) throw new Error("No se pudo obtener un ganador.");
       rotateToWinner(selectedWinner);
 
@@ -71,6 +74,7 @@ export default function useRoulette(participants, options = {}) {
       }, duration);
     } catch (err) {
       setError(err);
+      setWaitingForResult(false);
       setSpinning(false);
       return null;
     }
@@ -87,6 +91,7 @@ export default function useRoulette(participants, options = {}) {
     rotation,
     execution,
     error,
+    waitingForResult,
     frozenParticipants,
   };
 }
