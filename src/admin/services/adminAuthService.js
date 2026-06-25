@@ -1,15 +1,39 @@
-import { getAuthUser, isAdminUser, loginUser, logoutUser } from "../../services/authService";
+import {
+  getAuthUser,
+  hasRecentMfa,
+  isAdminUser,
+  loginUser,
+  logoutUser,
+  savePendingOtp,
+} from "../../services/authService";
 
 export async function loginAdmin(email, password) {
   const result = await loginUser(email, password);
 
   // If the backend requires OTP, propagate that response so caller can handle redirection.
   if (result?.requiresOtp) {
-    sessionStorage.setItem("auth_challenge_token", result.challengeToken);
-    sessionStorage.setItem("auth_pending_email", email);
-    if (result.expiresInSeconds) sessionStorage.setItem("auth_otp_expires", String(result.expiresInSeconds));
-    if (result.delivery) sessionStorage.setItem("auth_otp_delivery", JSON.stringify(result.delivery));
-    return result;
+    if (result.user?.role !== "ADMIN") {
+      return {
+        success: false,
+        message:
+          "El usuario existe, pero no tiene rol ADMIN. Promuévelo en Supabase antes de entrar al panel.",
+      };
+    }
+
+    savePendingOtp({
+      challengeToken: result.challengeToken,
+      email: email.trim(),
+      expiresInSeconds: result.expiresInSeconds,
+      delivery: result.delivery,
+      context: "admin",
+      successRedirect: "/admin/dashboard",
+      failureRedirect: "/admin/login",
+    });
+
+    return {
+      ...result,
+      success: true,
+    };
   }
 
   if (result.user?.role !== "ADMIN") {
@@ -29,5 +53,9 @@ export async function logoutAdmin() {
 }
 
 export function isAdminAuthenticated() {
-  return Boolean(getAuthUser() && isAdminUser());
+  return Boolean(getAuthUser() && isAdminUser() && hasRecentMfa(15));
+}
+
+export function isAdminLoggedWithoutRecentMfa() {
+  return Boolean(getAuthUser() && isAdminUser() && !hasRecentMfa(15));
 }

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { Users, Shield, TrendingUp } from "lucide-react";
+import { Users, Shield, TrendingUp, Trophy, Zap, Share2 } from "lucide-react";
 
 import { apiFetch } from "../api/client";
 
@@ -62,6 +62,7 @@ function Home() {
             </p>
           </div>
 
+          {/* Se expandió la rejilla reutilizando FeatureCard para dar mayor contenido y peso visual */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <FeatureCard
               icon={Users}
@@ -72,13 +73,31 @@ function Home() {
             <FeatureCard
               icon={Shield}
               title="Transparencia"
-              description="Resultados auditables con evidencia verificable y hash seguro."
+              description="Resultados auditables con evidencia certificada y validación pública inmediata."
             />
 
             <FeatureCard
               icon={TrendingUp}
               title="Escalable"
-              description="Desde pequeños eventos hasta miles de usuarios simultáneos."
+              description="Desde pequeños eventos locales hasta miles de usuarios simultáneos en vivo."
+            />
+
+            <FeatureCard
+              icon={Trophy}
+              title="Múltiples Premios"
+              description="Asigna y distribuye diferentes categorías de premios en una sola sesión de juego."
+            />
+
+            <FeatureCard
+              icon={Zap}
+              title="Animaciones en Vivo"
+              description="Elige entre ruletas, tragamonedas o selectores rápidos para mantener el dinamismo."
+            />
+
+            <FeatureCard
+              icon={Share2}
+              title="Acceso Compartido"
+              description="Ofrece un enlace público para que tu audiencia compruebe la legitimidad del evento."
             />
           </div>
         </div>
@@ -101,7 +120,7 @@ function Home() {
             </p>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <TestimonialCard
               name="Carlos"
               role="Streamer"
@@ -118,6 +137,24 @@ function Home() {
               name="Matías"
               role="Gaming Community"
               comment="Las animaciones y el sistema realtime le dieron un nivel totalmente distinto a nuestros eventos."
+            />
+
+            <TestimonialCard
+              name="Valeria R."
+              role="Marketing Director"
+              comment="Excelente herramienta para dinámicas corporativas. La validación pública de ganadores nos ahorró disputas con los clientes."
+            />
+
+            <TestimonialCard
+              name="Andrés G."
+              role="Creador de Contenido"
+              comment="Mis seguidores adoran la ruleta en vivo. Poder importar la lista de participantes en un clic agilizó mis transmisiones."
+            />
+
+            <TestimonialCard
+              name="Sofía M."
+              role="Comunidad de eSports"
+              comment="La mejor opción para torneos competitivos donde los sorteos de llaves y premios necesitan ser 100% justos."
             />
           </div>
         </div>

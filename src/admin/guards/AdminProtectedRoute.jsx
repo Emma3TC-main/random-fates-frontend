@@ -1,11 +1,37 @@
-import { Navigate } from "react-router-dom";
-import { isAdminAuthenticated } from "../services/adminAuthService";
+import { Navigate, useLocation } from "react-router-dom";
+import {
+  isAdminAuthenticated,
+  isAdminLoggedWithoutRecentMfa,
+} from "../services/adminAuthService";
 
 function AdminProtectedRoute({ children }) {
-  const authenticated = isAdminAuthenticated();
+  const location = useLocation();
 
-  if (!authenticated) {
-    return <Navigate to="/admin/login" replace />;
+  if (isAdminLoggedWithoutRecentMfa()) {
+    return (
+      <Navigate
+        to="/admin/login"
+        replace
+        state={{
+          from: location.pathname,
+          message:
+            "Tu verificación administrativa expiró. Inicia sesión nuevamente y confirma el OTP.",
+        }}
+      />
+    );
+  }
+
+  if (!isAdminAuthenticated()) {
+    return (
+      <Navigate
+        to="/admin/login"
+        replace
+        state={{
+          from: location.pathname,
+          message: "Debes iniciar sesión como administrador.",
+        }}
+      />
+    );
   }
 
   return children;

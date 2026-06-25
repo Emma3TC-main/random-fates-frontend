@@ -1,30 +1,45 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ArrowRight, LockKeyhole, Mail, Shield, Sparkles } from "lucide-react";
 import "animate.css";
 import { loginAdmin } from "../services/adminAuthService";
 
 function AdminLogin() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "admin@randomfates.test", password: "Password123" });
-  const [error, setError] = useState("");
+  const location = useLocation();
+  const [form, setForm] = useState({
+    email: "admin@randomfates.test",
+    password: "Password123",
+  });
+  const [error, setError] = useState(location.state?.message || "");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (event) => setForm((prev) => ({ ...prev, [event.target.name]: event.target.value }));
+  const handleChange = (event) =>
+    setForm((prev) => ({ ...prev, [event.target.name]: event.target.value }));
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
     try {
       setLoading(true);
-      const result = await loginAdmin(form.email, form.password);
+      const result = await loginAdmin(form.email.trim(), form.password);
+
+      if (result?.requiresOtp) {
+        navigate("/admin/otp", { replace: true });
+        return;
+      }
+
       if (!result.success) {
         setError(result.message);
         return;
       }
+
       navigate("/admin/dashboard", { replace: true });
     } catch (err) {
-      setError(err.message || "No se pudo iniciar sesión como administrador.");
+      setError(
+        err.message ||
+          "Autenticación denegada. Contacte al administrador de infraestructura.",
+      );
     } finally {
       setLoading(false);
     }
@@ -46,30 +61,64 @@ function AdminLogin() {
               <Shield size={40} />
             </div>
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/10 bg-cyan-400/5 px-4 py-2 text-xs font-semibold tracking-[0.25em] text-cyan-300 backdrop-blur-sm">
-              <Sparkles size={14} className="animate-pulse" /> ADMIN REAL
+              <Sparkles size={14} className="animate-pulse" /> ACCESO
+              RESTRINGIDO
             </div>
-            <h1 className="text-4xl font-bold tracking-tight text-white">Admin Access</h1>
-            <p className="mt-3 text-slate-400">Usa credenciales del backend con rol ADMIN.</p>
+            <h1 className="text-4xl font-bold tracking-tight text-white">
+              Terminal de Control
+            </h1>
+            <p className="mt-3 text-slate-400">
+              Autenticación requerida para credenciales con privilegios de
+              jerarquía global.
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <Field icon={<Mail size={18} />} label="Email" name="email" type="email" value={form.email} onChange={handleChange} />
-            <Field icon={<LockKeyhole size={18} />} label="Password" name="password" type="password" value={form.password} onChange={handleChange} />
+            <Field
+              icon={<Mail size={18} />}
+              label="Correo Electrónico Institucional"
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+            />
+            <Field
+              icon={<LockKeyhole size={18} />}
+              label="Clave de Seguridad"
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+            />
 
             <div className="rounded-2xl border border-cyan-400/10 bg-cyan-400/5 p-4 text-xs leading-relaxed text-cyan-100">
-              Si tu usuario aún es USER, promuévelo en Supabase: <code className="text-cyan-300">UPDATE users SET role='ADMIN' WHERE email='admin@randomfates.test';</code>
+              Este sistema monitorea los intentos de inicio de sesión de forma
+              proactiva. Todo acceso no autorizado será auditado y registrado en
+              los logs de seguridad perimetral.
             </div>
 
-            {error && <div className="rounded-2xl border border-red-500/10 bg-red-500/10 p-4 text-sm text-red-400">{error}</div>}
+            {error && (
+              <div className="rounded-2xl border border-red-500/10 bg-red-500/10 p-4 text-sm text-red-400">
+                {error}
+              </div>
+            )}
 
-            <button disabled={loading} className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-cyan-400 py-4 font-semibold text-slate-950 shadow-xl shadow-cyan-400/20 transition hover:-translate-y-0.5 hover:bg-cyan-300 disabled:opacity-60">
-              {loading ? "Validando..." : "Access Dashboard"}
-              <ArrowRight size={18} className="transition group-hover:translate-x-1" />
+            <button
+              disabled={loading}
+              className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-cyan-400 py-4 font-semibold text-slate-950 shadow-xl shadow-cyan-400/20 transition hover:-translate-y-0.5 hover:bg-cyan-300 disabled:opacity-60"
+            >
+              {loading ? "Validando credenciales..." : "Iniciar Sesión Maestra"}
+              <ArrowRight
+                size={18}
+                className="transition group-hover:translate-x-1"
+              />
             </button>
           </form>
 
           <div className="mt-8 text-center text-xs text-slate-500">
-            <Link to="/login" className="text-cyan-300 hover:underline">Volver al login de usuario</Link>
+            <Link to="/login" className="text-cyan-300 hover:underline">
+              Volver al portal de usuario
+            </Link>
           </div>
         </div>
       </div>
@@ -78,7 +127,25 @@ function AdminLogin() {
 }
 
 function Field({ icon, label, name, type, value, onChange }) {
-  return <div><label className="mb-2 block text-sm font-medium text-slate-300">{label}</label><div className="group relative"><div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-cyan-400">{icon}</div><input type={type} name={name} value={value} onChange={onChange} className="w-full rounded-2xl border border-slate-800 bg-slate-950/80 py-4 pl-12 pr-5 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400 focus:bg-slate-900 focus:ring-4 focus:ring-cyan-400/10" /></div></div>;
+  return (
+    <div>
+      <label className="mb-2 block text-sm font-medium text-slate-300">
+        {label}
+      </label>
+      <div className="group relative">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-cyan-400">
+          {icon}
+        </div>
+        <input
+          type={type}
+          name={name}
+          value={value}
+          onChange={onChange}
+          className="w-full rounded-2xl border border-slate-800 bg-slate-950/80 py-4 pl-12 pr-5 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400 focus:bg-slate-900 focus:ring-4 focus:ring-cyan-400/10"
+        />
+      </div>
+    </div>
+  );
 }
 
 export default AdminLogin;

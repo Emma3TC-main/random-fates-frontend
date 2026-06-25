@@ -4,6 +4,7 @@ import AdminLogin from "../pages/AdminLogin";
 import AdminDashboard from "../pages/AdminDashboard";
 import AdminGames from "../pages/AdminGames";
 import AdminUsers from "../pages/AdminUsers";
+import OtpVerify from "../../pages/OtpVerify";
 
 import AdminProtectedRoute from "../guards/AdminProtectedRoute";
 
@@ -11,7 +12,8 @@ function AdminRoutes() {
   return (
     <Routes>
       <Route path="login" element={<AdminLogin />} />
-
+      <Route path="otp" element={<OtpVerify />} />
+      
       <Route
         path="dashboard"
         element={
