@@ -39,7 +39,9 @@ export default function useSlots(participants, options = {}) {
         selectedWinner = getWinnerFromExecution(executionData);
         setExecution(executionData);
       } else {
-        selectedWinner = randomWinner(participants);
+        selectedWinner = randomWinner(participants, {
+          avoidIds: history.slice(0, 1).map((item) => item.id),
+        });
       }
 
       if (!selectedWinner) throw new Error("No se pudo obtener un ganador.");
@@ -61,5 +63,16 @@ export default function useSlots(participants, options = {}) {
     }
   };
 
-  return { spinning, winner, history, duration, reels, setDuration, startSlots, setWinner, execution, error };
+  return {
+    spinning,
+    winner,
+    history,
+    duration,
+    reels,
+    setDuration,
+    startSlots,
+    setWinner,
+    execution,
+    error,
+  };
 }

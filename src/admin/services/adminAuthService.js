@@ -6,6 +6,7 @@ import {
   logoutUser,
   savePendingOtp,
 } from "../../services/authService";
+import { adminPath } from "../../config/routes";
 
 export async function loginAdmin(email, password) {
   const result = await loginUser(email, password);
@@ -26,8 +27,8 @@ export async function loginAdmin(email, password) {
       expiresInSeconds: result.expiresInSeconds,
       delivery: result.delivery,
       context: "admin",
-      successRedirect: "/admin/dashboard",
-      failureRedirect: "/admin/login",
+      successRedirect: adminPath("/dashboard"),
+      failureRedirect: adminPath("/login"),
     });
 
     return {

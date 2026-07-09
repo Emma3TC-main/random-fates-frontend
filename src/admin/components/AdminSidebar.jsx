@@ -13,13 +13,14 @@ import "animate.css";
 import logo from "../../assets/Logo.png";
 
 import { logoutAdmin } from "../services/adminAuthService";
+import { adminPath } from "../../config/routes";
 
 function AdminSidebar() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logoutAdmin();
-    navigate("/admin/login");
+    navigate(adminPath("/login"));
   };
 
   const navClass = ({ isActive }) =>
@@ -61,7 +62,7 @@ function AdminSidebar() {
 
       {/* NAVIGATION */}
       <nav className="flex flex-1 flex-col gap-3">
-        <NavLink to="/admin/dashboard" className={navClass}>
+        <NavLink to={adminPath("/dashboard")} className={navClass}>
           <LayoutDashboard
             size={20}
             className="transition duration-300 group-hover:scale-110"
@@ -69,7 +70,7 @@ function AdminSidebar() {
           Dashboard
         </NavLink>
 
-        <NavLink to="/admin/games" className={navClass}>
+        <NavLink to={adminPath("/games")} className={navClass}>
           <Gamepad2
             size={20}
             className="transition duration-300 group-hover:scale-110"
@@ -77,7 +78,7 @@ function AdminSidebar() {
           Games
         </NavLink>
 
-        <NavLink to="/admin/users" className={navClass}>
+        <NavLink to={adminPath("/users")} className={navClass}>
           <Users
             size={20}
             className="transition duration-300 group-hover:scale-110"

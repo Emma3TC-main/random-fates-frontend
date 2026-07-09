@@ -24,15 +24,20 @@ export default function useRoulette(participants, options = {}) {
   }, []);
 
   const rotateToWinner = (selectedWinner) => {
-    const winnerIndex = Math.max(0, participants.findIndex((p) => p.id === selectedWinner.id));
-    const segmentAngle = participants.length > 0 ? 360 / participants.length : 360;
+    const winnerIndex = Math.max(
+      0,
+      participants.findIndex((p) => p.id === selectedWinner.id),
+    );
+    const segmentAngle =
+      participants.length > 0 ? 360 / participants.length : 360;
     const targetAngle = winnerIndex * segmentAngle;
     const extraSpins = 360 * 6;
 
     rafRef.current = requestAnimationFrame(() => {
       setRotation((prevRotation) => {
         const currentRotation = ((prevRotation % 360) + 360) % 360;
-        const correction = (360 - ((currentRotation + targetAngle) % 360)) % 360;
+        const correction =
+          (360 - ((currentRotation + targetAngle) % 360)) % 360;
         return prevRotation + extraSpins + correction;
       });
     });
@@ -56,7 +61,9 @@ export default function useRoulette(participants, options = {}) {
         selectedWinner = getWinnerFromExecution(executionData);
         setExecution(executionData);
       } else {
-        selectedWinner = randomWinner(participants);
+        selectedWinner = randomWinner(participants, {
+          avoidIds: history.slice(0, 1).map((item) => item.id),
+        });
       }
 
       setWaitingForResult(false);

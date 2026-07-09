@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { adminPath } from "../config/routes";
 import {
   verifyOtp,
   resendOtp,
@@ -32,7 +33,7 @@ function OtpVerify() {
   const successRedirect = sessionStorage.getItem("auth_otp_success_redirect");
   const failureRedirect =
     sessionStorage.getItem("auth_otp_failure_redirect") ||
-    (otpContext === "admin" ? "/admin/login" : "/login");
+    (otpContext === "admin" ? adminPath("/login") : "/login");
 
   useEffect(() => {
     if (!challengeToken) {
@@ -94,7 +95,7 @@ function OtpVerify() {
         await logoutUser();
         clearPendingOtp();
         setError("El usuario verificado no tiene permisos de administrador.");
-        navigate("/admin/login", {
+        navigate(adminPath("/login"), {
           replace: true,
           state: {
             message:
@@ -107,7 +108,7 @@ function OtpVerify() {
       clearPendingOtp();
 
       const fallbackRedirect =
-        result.user?.role === "ADMIN" ? "/admin/dashboard" : "/dashboard";
+        result.user?.role === "ADMIN" ? adminPath("/dashboard") : "/dashboard";
 
       navigate(successRedirect || fallbackRedirect, { replace: true });
     } catch (err) {

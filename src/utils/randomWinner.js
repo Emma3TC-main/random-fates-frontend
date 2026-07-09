@@ -1,5 +1,5 @@
-export function randomWinner(participants) {
-  const randomIndex = Math.floor(Math.random() * participants.length);
+import { secureRandomWinner } from "./secureRandom";
 
-  return participants[randomIndex];
+export function randomWinner(participants, options = {}) {
+  return secureRandomWinner(participants, options);
 }

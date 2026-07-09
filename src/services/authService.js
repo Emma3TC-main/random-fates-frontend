@@ -163,5 +163,14 @@ export const syncAuthUser = async () => {
   return user;
 };
 
+export const updateProfile = async (payload) => {
+  const user = await getData(endpoints.auth.updateMe, {
+    method: "PATCH",
+    body: payload,
+  });
+  tokenStore.setSession({ user, tokens: {} });
+  return user;
+};
+
 export const isAuthenticated = () => Boolean(tokenStore.getAccessToken());
 export const isAdminUser = () => getAuthUser()?.role === "ADMIN";

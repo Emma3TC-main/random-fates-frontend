@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ArrowRight, LockKeyhole, Mail, Shield, Sparkles } from "lucide-react";
 import "animate.css";
 import { loginAdmin } from "../services/adminAuthService";
+import { adminPath } from "../../config/routes";
 
 function AdminLogin() {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ function AdminLogin() {
       const result = await loginAdmin(form.email.trim(), form.password);
 
       if (result?.requiresOtp) {
-        navigate("/admin/otp", { replace: true });
+        navigate(adminPath("/otp"), { replace: true });
         return;
       }
 
@@ -34,7 +35,7 @@ function AdminLogin() {
         return;
       }
 
-      navigate("/admin/dashboard", { replace: true });
+      navigate(adminPath("/dashboard"), { replace: true });
     } catch (err) {
       setError(
         err.message ||

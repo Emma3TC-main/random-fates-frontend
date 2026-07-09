@@ -20,7 +20,8 @@ export default function useRandomSelection(participants, options = {}) {
     setError(null);
 
     const interval = setInterval(() => {
-      const randomParticipant = participants[Math.floor(Math.random() * participants.length)];
+      const randomParticipant =
+        participants[Math.floor(Math.random() * participants.length)];
       setCurrentName(randomParticipant.name || randomParticipant.fullName);
     }, 100);
 
@@ -34,7 +35,9 @@ export default function useRandomSelection(participants, options = {}) {
         selectedWinner = getWinnerFromExecution(executionData);
         setExecution(executionData);
       } else {
-        selectedWinner = randomWinner(participants);
+        selectedWinner = randomWinner(participants, {
+          avoidIds: history.slice(0, 1).map((item) => item.id),
+        });
       }
 
       if (!selectedWinner) throw new Error("No se pudo obtener un ganador.");
@@ -56,5 +59,16 @@ export default function useRandomSelection(participants, options = {}) {
     }
   };
 
-  return { animating, currentName, winner, history, duration, setDuration, startSelection, setWinner, execution, error };
+  return {
+    animating,
+    currentName,
+    winner,
+    history,
+    duration,
+    setDuration,
+    startSelection,
+    setWinner,
+    execution,
+    error,
+  };
 }

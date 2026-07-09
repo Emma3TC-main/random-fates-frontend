@@ -8,11 +8,20 @@ const clampParticipantParams = (params = {}) => ({
 });
 
 const normalizeParticipant = (participant) => {
-  const identifier = participant.identifier || participant.dni || participant.document || participant.email || participant.id;
+  const identifier =
+    participant.identifier ||
+    participant.dni ||
+    participant.document ||
+    participant.email ||
+    participant.id;
   return {
-    fullName: String(participant.fullName || participant.name || participant.nombre || "").trim(),
+    fullName: String(
+      participant.fullName || participant.name || participant.nombre || "",
+    ).trim(),
     identifier: String(identifier || "").trim(),
-    email: participant.email ? String(participant.email).trim().toLowerCase() : undefined,
+    email: participant.email
+      ? String(participant.email).trim().toLowerCase()
+      : undefined,
     source: participant.source || "MANUAL",
     metadata: participant.metadata || {},
   };
@@ -20,7 +29,9 @@ const normalizeParticipant = (participant) => {
 
 export const participantService = {
   list(raffleId, params = { page: 1, limit: 200 }) {
-    return getData(endpoints.participants.list(raffleId, clampParticipantParams(params)));
+    return getData(
+      endpoints.participants.list(raffleId, clampParticipantParams(params)),
+    );
   },
 
   create(raffleId, participant) {
@@ -30,12 +41,25 @@ export const participantService = {
     });
   },
 
-  bulk(raffleId, participants, filename = "frontend-bulk.json") {
+  bulk(
+    raffleId,
+    participants,
+    filename = "frontend-bulk.json",
+    source = "CSV",
+  ) {
     return getData(endpoints.participants.bulk(raffleId), {
       method: "POST",
       body: {
         filename,
-        participants: participants.map(normalizeParticipant).filter((participant) => participant.fullName && participant.identifier),
+        source,
+        participants: participants
+          .map((participant) => ({
+            ...normalizeParticipant(participant),
+            source,
+          }))
+          .filter(
+            (participant) => participant.fullName && participant.identifier,
+          ),
       },
     });
   },

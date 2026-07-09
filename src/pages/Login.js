@@ -5,6 +5,7 @@ import "animate.css";
 
 import { loginUser, savePendingOtp } from "../services/authService";
 import { demoSeed } from "../services/demoSeedService";
+import { adminPath } from "../config/routes";
 
 function Login() {
   const navigate = useNavigate();
@@ -31,7 +32,9 @@ function Login() {
       if (result?.requiresOtp) {
         const target =
           location.state?.from ||
-          (result.user?.role === "ADMIN" ? "/admin/dashboard" : "/dashboard");
+          (result.user?.role === "ADMIN"
+            ? adminPath("/dashboard")
+            : "/dashboard");
 
         savePendingOtp({
           challengeToken: result.challengeToken,
@@ -48,7 +51,9 @@ function Login() {
       }
       const target =
         location.state?.from ||
-        (result.user?.role === "ADMIN" ? "/admin/dashboard" : "/dashboard");
+        (result.user?.role === "ADMIN"
+          ? adminPath("/dashboard")
+          : "/dashboard");
       navigate(target, { replace: true });
     } catch (err) {
       setError(err.message || "Usuario o contraseña incorrectos.");

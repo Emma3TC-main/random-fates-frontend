@@ -19,6 +19,8 @@ import { participantService } from "../services/participantService";
 import { prizeService } from "../services/prizeService";
 import { raffleService } from "../services/raffleService";
 import { createPlayableDemoRaffle } from "../services/demoSeedService";
+import { billingService } from "../services/billingService";
+import CsvParticipantsImporter from "../components/raffles/CsvParticipantsImporter";
 import {
   formatDate,
   getParticipantCount,
@@ -62,6 +64,7 @@ function Raffles() {
     defaultParticipantsText,
   );
   const [lastExecution, setLastExecution] = useState(null);
+  const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -71,7 +74,11 @@ function Raffles() {
     try {
       setLoading(true);
       setError("");
-      const data = await raffleService.list({ page: 1, limit: 100 });
+      const [data, accountData] = await Promise.all([
+        raffleService.list({ page: 1, limit: 100 }),
+        billingService.getAccount().catch(() => null),
+      ]);
+      setAccount(accountData);
       const list = Array.isArray(data) ? data : [];
       setRaffles(list);
       const nextSelected = selectedIdFromUrl || selectedId || list[0]?.id || "";
@@ -220,7 +227,23 @@ function Raffles() {
       return setError("Agrega al menos un participante.");
     const job = await runAction(
       "Lista de participantes importada con éxito.",
-      () => participantService.bulk(selected.id, parsed, "frontend-form.csv"),
+      () =>
+        participantService.bulk(
+          selected.id,
+          parsed,
+          "frontend-form.csv",
+          "MANUAL",
+        ),
+    );
+    if (job) await loadDetail(selected.id);
+  };
+
+  const handleCsvParticipants = async (parsedParticipants, filename) => {
+    if (!selected?.id) return setError("Selecciona un sorteo primero.");
+    if (!parsedParticipants?.length)
+      return setError("El CSV no tiene filas válidas.");
+    const job = await runAction("CSV validado e importado con éxito.", () =>
+      participantService.bulk(selected.id, parsedParticipants, filename, "CSV"),
     );
     if (job) await loadDetail(selected.id);
   };
@@ -577,10 +600,10 @@ function Raffles() {
 
                   <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
                     <h3 className="text-xl font-bold text-slate-900">
-                      Carga masiva de participantes
+                      Registro manual rápido
                     </h3>
                     <p className="mt-1 text-sm text-slate-500">
-                      Formato requerido: nombre,identificador,email
+                      Disponible para Free. Formato: nombre,identificador,email
                     </p>
                     <textarea
                       value={participantsText}
@@ -593,11 +616,17 @@ function Raffles() {
                     <button
                       disabled={busy}
                       onClick={handleBulkParticipants}
-                      className="mt-3 w-full rounded-2xl bg-cyan-400 px-4 py-3 font-bold text-slate-900 hover:bg-cyan-300 disabled:opacity-60"
+                      className="mt-3 w-full rounded-2xl bg-slate-900 px-4 py-3 font-bold text-white hover:bg-slate-800 disabled:opacity-60"
                     >
-                      Importar lista
+                      Importar manualmente
                     </button>
                   </section>
+
+                  <CsvParticipantsImporter
+                    busy={busy}
+                    account={account}
+                    onImport={handleCsvParticipants}
+                  />
                 </div>
               )}
 

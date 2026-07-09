@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { adminPath } from "../../config/routes";
 
 import AdminLogin from "../pages/AdminLogin";
 import AdminDashboard from "../pages/AdminDashboard";
@@ -13,7 +14,7 @@ function AdminRoutes() {
     <Routes>
       <Route path="login" element={<AdminLogin />} />
       <Route path="otp" element={<OtpVerify />} />
-      
+
       <Route
         path="dashboard"
         element={
@@ -41,7 +42,7 @@ function AdminRoutes() {
         }
       />
 
-      <Route path="*" element={<Navigate to="/admin/dashboard" />} />
+      <Route path="*" element={<Navigate to={adminPath("/dashboard")} />} />
     </Routes>
   );
 }

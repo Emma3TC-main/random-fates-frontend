@@ -3,6 +3,7 @@ import {
   isAdminAuthenticated,
   isAdminLoggedWithoutRecentMfa,
 } from "../services/adminAuthService";
+import { adminPath } from "../../config/routes";
 
 function AdminProtectedRoute({ children }) {
   const location = useLocation();
@@ -10,7 +11,7 @@ function AdminProtectedRoute({ children }) {
   if (isAdminLoggedWithoutRecentMfa()) {
     return (
       <Navigate
-        to="/admin/login"
+        to={adminPath("/login")}
         replace
         state={{
           from: location.pathname,
@@ -24,7 +25,7 @@ function AdminProtectedRoute({ children }) {
   if (!isAdminAuthenticated()) {
     return (
       <Navigate
-        to="/admin/login"
+        to={adminPath("/login")}
         replace
         state={{
           from: location.pathname,
