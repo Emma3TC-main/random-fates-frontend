@@ -9,8 +9,8 @@ function AdminLogin() {
   const navigate = useNavigate();
   const location = useLocation();
   const [form, setForm] = useState({
-    email: "admin@randomfates.test",
-    password: "Password123",
+    email: "",
+    password: "",
   });
   const [error, setError] = useState(location.state?.message || "");
   const [loading, setLoading] = useState(false);
@@ -39,7 +39,7 @@ function AdminLogin() {
     } catch (err) {
       setError(
         err.message ||
-          "Autenticación denegada. Contacte al administrador de infraestructura.",
+        "Autenticación denegada. Contacte al administrador de infraestructura.",
       );
     } finally {
       setLoading(false);
@@ -74,12 +74,13 @@ function AdminLogin() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form autoComplete="off" onSubmit={handleSubmit} className="space-y-5">
             <Field
               icon={<Mail size={18} />}
               label="Correo Electrónico Institucional"
               name="email"
               type="email"
+              placeholder="ejemplo@tuempresa.com"
               value={form.email}
               onChange={handleChange}
             />
@@ -88,6 +89,7 @@ function AdminLogin() {
               label="Clave de Seguridad"
               name="password"
               type="password"
+              placeholder="••••••••"
               value={form.password}
               onChange={handleChange}
             />
@@ -127,7 +129,7 @@ function AdminLogin() {
   );
 }
 
-function Field({ icon, label, name, type, value, onChange }) {
+function Field({ icon, label, name, type, value, onChange, placeholder }) {
   return (
     <div>
       <label className="mb-2 block text-sm font-medium text-slate-300">
@@ -138,10 +140,12 @@ function Field({ icon, label, name, type, value, onChange }) {
           {icon}
         </div>
         <input
+          autoComplete="off"
           type={type}
           name={name}
           value={value}
           onChange={onChange}
+          placeholder={placeholder}
           className="w-full rounded-2xl border border-slate-800 bg-slate-950/80 py-4 pl-12 pr-5 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400 focus:bg-slate-900 focus:ring-4 focus:ring-cyan-400/10"
         />
       </div>

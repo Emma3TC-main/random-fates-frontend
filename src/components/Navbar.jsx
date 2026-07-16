@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { LogOut, Shield, UserCircle } from "lucide-react";
+import { LogOut, Shield, UserCircle, Menu, X } from "lucide-react";
 import logo from "../assets/Logo.png";
 import { getAuthUser, logoutUser } from "../services/authService";
 import { adminPath } from "../config/routes";
@@ -7,6 +8,7 @@ import { adminPath } from "../config/routes";
 function Navbar() {
   const navigate = useNavigate();
   const user = getAuthUser();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navClass = ({ isActive }) =>
     `rounded-2xl px-4 py-2.5 text-sm font-semibold transition ${
@@ -98,20 +100,46 @@ function Navbar() {
             <>
               <Link
                 to="/login"
-                className="rounded-2xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white hover:bg-white/20"
+                className="hidden sm:inline-flex rounded-2xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white hover:bg-white/20"
               >
                 Ingresar
               </Link>
               <Link
                 to="/register"
-                className="rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800"
+                className="hidden sm:inline-flex rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800"
               >
                 Crear cuenta
               </Link>
             </>
           )}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="lg:hidden p-2 text-white ml-2 rounded-2xl hover:bg-white/10"
+          >
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
       </nav>
+      {isMobileMenuOpen && (
+        <div className="lg:hidden border-t border-[#42DEE1]/20 bg-gradient-to-b from-[#3FC5F0]/95 to-[#42DEE1]/95 px-6 py-4 shadow-inner">
+          <div className="flex flex-col gap-2">
+            <NavLink to="/" onClick={() => setIsMobileMenuOpen(false)} className={navClass}>Inicio</NavLink>
+            {user && <NavLink to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className={navClass}>Dashboard</NavLink>}
+            {user && <NavLink to="/raffles" onClick={() => setIsMobileMenuOpen(false)} className={navClass}>Sorteos</NavLink>}
+            {user && <NavLink to="/games" onClick={() => setIsMobileMenuOpen(false)} className={navClass}>Minijuegos</NavLink>}
+            {user && <NavLink to="/account" onClick={() => setIsMobileMenuOpen(false)} className={navClass}>Cuenta</NavLink>}
+            <NavLink to="/about" onClick={() => setIsMobileMenuOpen(false)} className={navClass}>Acerca</NavLink>
+            <NavLink to="/contact" onClick={() => setIsMobileMenuOpen(false)} className={navClass}>Contacto</NavLink>
+            {user?.role === "ADMIN" && <NavLink to={adminPath("/dashboard")} onClick={() => setIsMobileMenuOpen(false)} className={navClass}>Admin</NavLink>}
+            {!user && (
+              <div className="mt-2 flex flex-col gap-2 border-t border-white/20 pt-4">
+                <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="rounded-2xl border border-white/20 bg-white/10 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-white/20">Ingresar</Link>
+                <Link to="/register" onClick={() => setIsMobileMenuOpen(false)} className="rounded-2xl bg-slate-900 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-slate-800">Crear cuenta</Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 }

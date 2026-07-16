@@ -325,7 +325,7 @@ function Raffles() {
               disabled={busy}
               className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 font-semibold text-white shadow-sm hover:bg-slate-800 disabled:opacity-60"
             >
-              <FileSpreadsheet size={18} /> Generar juego demo
+              <FileSpreadsheet size={18} /> Generar juego
             </button>
           </div>
         </div>

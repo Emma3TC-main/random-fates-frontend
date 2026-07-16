@@ -4,8 +4,8 @@ import { prizeService } from "./prizeService";
 import { participantService } from "./participantService";
 
 export const demoSeed = {
-  email: "demo@randomfates.test",
-  password: "Password123",
+  email: "",
+  password: "",
   participants: [
     { fullName: "Ana Torres", identifier: "DNI-001", email: "ana@test.com", source: "MANUAL" },
     { fullName: "Luis Rojas", identifier: "DNI-002", email: "luis@test.com", source: "MANUAL" },
@@ -26,8 +26,8 @@ export async function ensureDemoAuth(email = demoSeed.email, password = demoSeed
 export async function createPlayableDemoRaffle(type = "ROULETTE") {
   const suffix = new Date().toLocaleTimeString("es-PE");
   const raffle = await raffleService.create({
-    title: `Demo jugable ${suffix}`,
-    description: "Sorteo demo activo para probar minijuegos con sistema activo",
+    title: `Sorteo default ${suffix}`,
+    description: "Sorteo activo para probar minijuegos con sistema activo",
     type,
     isPublic: true,
     configuration: {

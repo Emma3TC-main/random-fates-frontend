@@ -132,6 +132,7 @@ function Login() {
           </div>
 
           <form
+            autoComplete="off"
             onSubmit={handleLogin}
             className="bg-white rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-slate-100 p-8"
           >
@@ -154,6 +155,7 @@ function Login() {
                 </label>
                 <input
                   type="email"
+                  autoComplete="off"
                   placeholder="ejemplo@tuempresa.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -167,6 +169,7 @@ function Login() {
                 </label>
                 <input
                   type="password"
+                  autoComplete="off"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
