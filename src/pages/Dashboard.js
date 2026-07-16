@@ -112,7 +112,7 @@ function Dashboard() {
           <button
             onClick={handleCreateDemo}
             disabled={creatingDemo}
-            className="group flex items-center gap-2 rounded-xl border border-cyan-200 bg-white px-5 py-3 text-sm font-semibold text-cyan-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-cyan-50 disabled:opacity-60"
+            className="hidden group items-center gap-2 rounded-xl border border-cyan-200 bg-white px-5 py-3 text-sm font-semibold text-cyan-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-cyan-50 disabled:opacity-60"
           >
             <FileSpreadsheet size={18} />{" "}
             {creatingDemo ? "Generando..." : "Generar evento demo"}

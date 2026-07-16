@@ -203,7 +203,7 @@ export default function CsvParticipantsImporter({ onImport, busy, account }) {
         <button
           type="button"
           onClick={loadTemplate}
-          className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700"
+          className="hidden rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700"
         >
           Usar demo
         </button>

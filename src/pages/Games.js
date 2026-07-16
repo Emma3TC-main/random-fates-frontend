@@ -207,7 +207,7 @@ function Games() {
                           window.location.href = `/games/${game.slug}?raffleId=${raffle.id}`;
                       }}
                       disabled={busyType === game.type}
-                      className="flex-1 rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60"
+                      className="hidden flex-1 rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60"
                     >
                       {busyType === game.type
                         ? "Generando..."
